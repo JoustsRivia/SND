@@ -1,0 +1,19 @@
+<!-- pkg-barcode/pages/query/query.wxml —— M14.1.3 扫码查询 -->
+<view class="q">
+  <view class="card">
+    <view class="row"><text class="label">编码</text><input class="input" placeholder="输入或扫描" value="{{code}}" bindinput="onInput" /></view>
+    <button size="mini" type="primary" bindtap="onQuery">查询</button>
+    <button size="mini" bindtap="onScan">扫一扫</button>
+  </view>
+
+  <view wx:if="{{result}}" class="card">
+    <view class="row" style="justify-content: space-between;">
+      <text class="name">{{result.name}}</text>
+      <text class="tag {{result.valid ? 'ok' : 'no'}}">{{result.valid ? '合格有效' : '无效/禁用'}}</text>
+    </view>
+    <text class="muted">编号：{{result.code}} · 状态：{{result.status}}</text>
+    <text class="muted">上次试验：{{result.lastTestDate}} · 有效截止：{{result.expireAt}}</text>
+    <text wx:if="{{!result.valid}}" class="warn">⚠ 该器具试验标识异常或已禁用，请现场核实</text>
+  </view>
+  <view wx:elif="{{code && result === null}}" class="muted card">未匹配到器具</view>
+</view>

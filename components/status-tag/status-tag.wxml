@@ -1,0 +1,2 @@
+<!-- components/status-tag/status-tag.wxml -->
+<view class="tag {{cls}} {{size}} {{plain ? 'plain' : ''}}">{{label}}</view>

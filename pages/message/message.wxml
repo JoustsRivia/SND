@@ -1,0 +1,34 @@
+<!-- pages/message/message.wxml —— 消息中心（M11） -->
+<view wx:if="{{loading}}" class="loading">加载中…</view>
+<block wx:else>
+  <stats-card wx:if="{{stats.length}}" items="{{stats}}" columns="3" />
+
+  <view class="bar">
+    <filter-bar tabs="{{tabs}}" activeTab="{{activeTab}}" bind:tab="onTab" />
+    <view class="bar-ops">
+      <text wx:if="{{hasUnread}}" class="mark-all" bindtap="onMarkAll">全部已读</text>
+      <text class="gen" bindtap="onGenerate">生成预警</text>
+    </view>
+  </view>
+
+  <view class="list">
+    <view wx:for="{{list}}" wx:key="_id" class="msg lv-{{item._cls}} {{item.read ? 'read' : ''}}" data-id="{{item._id}}" bindtap="onRead">
+      <view class="msg-bar"></view>
+      <view class="msg-main">
+        <view class="msg-top">
+          <text class="lv {{item._cls}}">{{item._icon}}</text>
+          <text class="title">{{item.title}}</text>
+          <text wx:if="{{!item.read}}" class="dot"></text>
+        </view>
+        <text class="content">{{item.content}}</text>
+        <text wx:if="{{item._time}}" class="time">{{item._time}}</text>
+      </view>
+    </view>
+    <view wx:if="{{!list.length}}" class="empty">
+      <view class="empty-icon">📭</view>
+      <view class="empty-title">暂无消息</view>
+      <view class="empty-desc">试验预警与系统通知会显示在这里</view>
+    </view>
+  </view>
+</block>
+<view class="safe-bottom"></view>

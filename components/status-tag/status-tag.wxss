@@ -1,0 +1,22 @@
+/* components/status-tag/status-tag.wxss */
+.tag {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 4rpx 16rpx; border-radius: 999rpx;
+  font-size: 22rpx; line-height: 1.4; box-sizing: border-box;
+  background: var(--c-success); color: #fff;
+}
+.tag.sm { font-size: 20rpx; padding: 2rpx 12rpx; }
+.tag.md { font-size: 24rpx; }
+.tag.success { background: var(--c-success); }
+.tag.warning { background: var(--c-warning); }
+.tag.danger  { background: var(--c-danger); }
+.tag.primary { background: var(--c-primary); }
+.tag.info    { background: var(--c-info); }
+.tag.dark    { background: var(--c-text-faint); }
+.tag.plain { background: transparent; }
+.tag.plain.success { color: var(--c-success); border: 1rpx solid var(--c-success); }
+.tag.plain.warning { color: var(--c-warning); border: 1rpx solid var(--c-warning); }
+.tag.plain.danger  { color: var(--c-danger);  border: 1rpx solid var(--c-danger); }
+.tag.plain.primary { color: var(--c-primary); border: 1rpx solid var(--c-primary); }
+.tag.plain.info    { color: var(--c-info); border: 1rpx solid var(--c-info); }
+.tag.plain.dark    { color: var(--c-text-faint); border: 1rpx solid var(--c-text-faint); }

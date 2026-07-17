@@ -1,0 +1,44 @@
+<!-- pages/tool-detail/tool-detail.wxml —— 器具档案「一物一档」 -->
+<view wx:if="{{loading}}" class="loading">加载中…</view>
+
+<block wx:elif="{{tool}}">
+  <view class="hero">
+    <view class="hero-top">
+      <text class="name">{{tool.name}}</text>
+      <status-tag status="{{tool.status}}" />
+    </view>
+    <text class="code">{{tool.code}} · {{tool.categoryName || tool.category}}</text>
+  </view>
+
+  <view wx:if="{{banner}}" class="banner {{banner.cls}}">
+    <text class="b-ico">⚠️</text>
+    <text class="b-txt">{{banner.text}}</text>
+  </view>
+
+  <view class="card info">
+    <view class="row"><text class="k">保管责任人</text><text class="v">{{tool.keeper || '—'}}</text></view>
+    <view class="row"><text class="k">存放库房</text><text class="v">{{tool.store || '—'}}</text></view>
+    <view class="row"><text class="k">有效截止</text><text class="v {{tool.expired ? 'danger' : ''}}">{{tool.expireAt || '—'}}</text></view>
+    <view class="row"><text class="k">规格型号</text><text class="v">{{tool.spec || '—'}}</text></view>
+    <view class="row"><text class="k">器具来源</text><text class="v">{{tool.source === 'lease' ? '租赁' : '自有'}}</text></view>
+  </view>
+
+  <view class="card">
+    <text class="card-title">履历时间线</text>
+    <record-timeline records="{{timeline}}" emptyText="暂无履历记录" />
+  </view>
+</block>
+
+<view wx:else class="empty">
+  <view class="empty-icon">🔍</view>
+  <view class="empty-title">未找到器具档案</view>
+  <view class="empty-desc">请确认编号或重新扫码</view>
+</view>
+
+<view wx:if="{{tool && actions.length}}" class="toolbar safe-bottom">
+  <view wx:for="{{actions}}" wx:key="key"
+    class="act {{item.primary ? 'primary' : ''}}" data-key="{{item.key}}" bindtap="onAction">
+    {{item.label}}
+  </view>
+</view>
+<view wx:else class="safe-bottom"></view>

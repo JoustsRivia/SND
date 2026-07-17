@@ -1,0 +1,12 @@
+/* components/tool-card/tool-card.wxss */
+.tcard {
+  background: var(--c-card); border-radius: var(--r-md);
+  padding: 24rpx; margin-bottom: var(--sp-3);
+  box-shadow: var(--sh-card);
+}
+.head { display: flex; align-items: center; justify-content: space-between; }
+.name { font-size: 30rpx; font-weight: 600; }
+.code { display: block; margin-top: 8rpx; font-size: 24rpx; color: var(--c-text-weak); }
+.meta { display: flex; align-items: center; margin-top: 8rpx; font-size: 24rpx; }
+.dot { margin: 0 10rpx; color: var(--c-text-weak); }
+.foot { display: flex; justify-content: space-between; margin-top: 12rpx; font-size: 22rpx; color: var(--c-text-weak); }

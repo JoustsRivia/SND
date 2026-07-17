@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "filter-bar": "../../components/filter-bar/filter-bar",
+    "stats-card": "../../components/stats-card/stats-card",
+    "tool-card": "../../components/tool-card/tool-card"
+  },
+  "navigationBarTitleText": "台账",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

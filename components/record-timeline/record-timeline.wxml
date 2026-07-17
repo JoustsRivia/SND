@@ -1,0 +1,15 @@
+<!-- components/record-timeline/record-timeline.wxml -->
+<view class="tl">
+  <view wx:if="{{records.length === 0}}" class="empty">{{emptyText}}</view>
+  <view wx:for="{{records}}" wx:key="time" class="item">
+    <view class="dot {{item.status || 'normal'}}"></view>
+    <view class="body">
+      <view class="top">
+        <text class="title">{{item.title}}</text>
+        <text class="time">{{item.time}}</text>
+      </view>
+      <text wx:if="{{item.desc}}" class="desc">{{item.desc}}</text>
+      <text wx:if="{{item.operator}}" class="op">操作人：{{item.operator}}</text>
+    </view>
+  </view>
+</view>

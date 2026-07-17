@@ -1,0 +1,10 @@
+/* pkg-barcode/pages/batch/batch.wxss */
+.batch { padding-bottom: 40rpx; }
+.sec-title { font-size: 30rpx; font-weight: 600; display: block; margin-bottom: 16rpx; }
+.tool { display: flex; justify-content: space-between; align-items: center; padding: 18rpx 0; border-bottom: 1rpx solid var(--c-divider); font-size: 28rpx; }
+.tick { width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border: 1rpx solid var(--c-border); border-radius: 50%; color: #fff; }
+.tick.on { background: var(--c-primary); border-color: var(--c-primary); }
+.batch .card button { margin-top: 24rpx; background: var(--c-primary); }
+.rez { padding: 14rpx 0; border-bottom: 1rpx solid var(--c-divider); }
+.rn { display: block; font-size: 28rpx; }
+.rc { display: block; font-size: 24rpx; color: var(--c-text-weak); margin-top: 4rpx; }

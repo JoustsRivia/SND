@@ -1,0 +1,19 @@
+<!-- components/tool-card/tool-card.wxml -->
+<view class="tcard" bindtap="onTap">
+  <view class="head">
+    <text class="name">{{tool.name}}</text>
+    <status-tag status="{{tool.status}}" />
+  </view>
+  <text class="code">{{tool.code}}</text>
+  <view class="meta">
+    <text class="muted">{{tool.categoryText || tool.category}}</text>
+    <block wx:if="{{showStore}}">
+      <text class="dot">·</text>
+      <text class="muted">{{tool.store || '未入库'}}</text>
+    </block>
+  </view>
+  <view class="foot" wx:if="{{tool.expireAt}}">
+    <text class="muted">有效期至 {{tool.expireAt}}</text>
+    <text wx:if="{{tool.keeper}}" class="muted">{{tool.keeper}}</text>
+  </view>
+</view>

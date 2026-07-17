@@ -1,0 +1,21 @@
+<!-- pkg-barcode/pages/print/print.wxml —— M14 打印文件输出 -->
+<view class="print">
+  <view class="card">
+    <view class="row"><text class="label">选择器具</text>
+      <picker mode="selector" range="{{list}}" range-key="name" value="{{idx}}" bindchange="onPick">
+        <view class="picker">{{list[idx].name}}（{{list[idx].code}}）▾</view>
+      </picker>
+    </view>
+    <button size="mini" type="primary" bindtap="onPrint">生成打印文件</button>
+  </view>
+
+  <view wx:if="{{label}}" class="card label-prev">
+    <text class="title">标签打印预览</text>
+    <text>名称：{{label.name}}</text>
+    <text>编号：{{label.code}}</text>
+    <text>类别：{{label.category}} · 规格：{{label.spec}}</text>
+    <text>上次试验：{{label.lastTestDate}} · 有效期至：{{label.expireAt}}</text>
+    <text>存放：{{label.store}} · 保管：{{label.keeper}}</text>
+    <button type="primary" bindtap="onDoPrint">打印</button>
+  </view>
+</view>

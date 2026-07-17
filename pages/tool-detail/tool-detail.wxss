@@ -1,0 +1,43 @@
+/* pages/tool-detail/tool-detail.wxss —— 器具档案 */
+.hero {
+  margin: var(--sp-3); padding: var(--sp-4) var(--sp-4) var(--sp-4);
+  border-radius: var(--r-lg); background: var(--c-hero-grad); color: #fff;
+  box-shadow: var(--sh-float); position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; right: -70rpx; top: -70rpx;
+  width: 220rpx; height: 220rpx; border-radius: 50%; background: rgba(255, 255, 255, 0.06);
+}
+.hero-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+.name { font-size: 36rpx; font-weight: 700; }
+.code { display: block; margin-top: 16rpx; font-size: 24rpx; opacity: 0.9; position: relative; z-index: 1; }
+
+.banner {
+  display: flex; align-items: center; margin: 0 var(--sp-3);
+  padding: 20rpx 24rpx; border-radius: var(--r-md); font-size: 24rpx;
+}
+.banner.danger { background: var(--c-danger-bg); color: var(--c-danger); }
+.banner.warning { background: var(--c-warning-bg); color: var(--c-warning); }
+.b-ico { margin-right: 12rpx; }
+.b-txt { flex: 1; }
+
+.info .row { display: flex; justify-content: space-between; padding: 24rpx 0; border-bottom: 1rpx solid var(--c-divider); }
+.info .row:last-child { border-bottom: none; }
+.info .k { font-size: 26rpx; color: var(--c-text-muted); }
+.info .v { font-size: 26rpx; font-weight: 500; color: var(--c-text); }
+.info .v.danger { color: var(--c-danger); font-weight: 700; }
+.card-title { display: block; font-size: 30rpx; font-weight: 600; margin-bottom: 8rpx; }
+
+.toolbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  display: flex; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3);
+  background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(10rpx);
+  box-shadow: var(--sh-up); border-top: 1rpx solid var(--c-divider);
+}
+.act {
+  flex: 1; height: 84rpx; border-radius: var(--r-pill);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28rpx; font-weight: 600; background: var(--c-surface); color: var(--c-text-sub);
+}
+.act.primary { background: var(--c-primary-grad); color: #fff; box-shadow: var(--sh-float); }
+.loading { text-align: center; }

@@ -1,0 +1,33 @@
+<!-- pages/scan/scan.wxml —— 扫码中枢（M14） -->
+<view class="scan-page">
+  <view class="frame">
+    <view class="frame-inner">
+      <view class="corner tl"></view><view class="corner tr"></view>
+      <view class="corner bl"></view><view class="corner br"></view>
+      <view class="laser"></view>
+      <text class="frame-tip">将二维码 / 条码放入框内</text>
+    </view>
+    <view class="scan-btn grad-primary" bindtap="onScan">
+      <text class="sb-ico">📷</text><text class="sb-txt">扫一扫</text>
+    </view>
+    <view class="manual" bindtap="onManual">手动输入编号 ›</view>
+  </view>
+
+  <view class="card" wx:if="{{recent.length}}">
+    <text class="card-title">最近扫码</text>
+    <view wx:for="{{recent}}" wx:key="_id" class="recent-row" data-id="{{item._id}}" bindtap="onTapRecent">
+      <view class="r-left">
+        <text class="r-name">{{item.name}}</text>
+        <text class="r-code">{{item.code}}</text>
+      </view>
+      <status-tag status="{{item.status}}" size="sm" />
+    </view>
+  </view>
+
+  <view class="card notice">
+    <text class="card-title">领用须知</text>
+    <view wx:for="{{notice}}" wx:key="*this" class="n-row"><text class="dot">·</text>{{item}}</view>
+  </view>
+
+  <view class="scan-role">当前角色：<text class="role-val">{{roleText || '未登录'}}</text></view>
+</view>

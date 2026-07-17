@@ -1,0 +1,14 @@
+<!-- components/menu-list/menu-list.wxml -->
+<view class="ml" wx:for="{{groups}}" wx:for-item="g" wx:key="title">
+  <text wx:if="{{g.title}}" class="gtitle">{{g.title}}</text>
+  <view class="group">
+    <view wx:for="{{g.items}}" wx:for-item="it" wx:key="key"
+      class="row {{it.danger ? 'danger' : ''}}" data-key="{{it.key}}" bindtap="onSelect">
+      <text wx:if="{{it.icon}}" class="ico">{{it.icon}}</text>
+      <text class="label">{{it.label}}</text>
+      <text wx:if="{{it.value}}" class="value">{{it.value}}</text>
+      <view wx:if="{{it.badge}}" class="badge">{{it.badge}}</view>
+      <text wx:if="{{it.arrow}}" class="arrow">›</text>
+    </view>
+  </view>
+</view>

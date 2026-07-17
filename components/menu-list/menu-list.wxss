@@ -1,0 +1,12 @@
+/* components/menu-list/menu-list.wxss */
+.ml { margin: var(--sp-3); }
+.gtitle { display: block; font-size: 24rpx; color: var(--c-text-weak); margin: 8rpx 8rpx 12rpx; }
+.group { background: var(--c-card); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--sh-card); }
+.row { display: flex; align-items: center; padding: 28rpx 24rpx; border-bottom: 1rpx solid var(--c-divider); }
+.row:last-child { border-bottom: none; }
+.row.danger .label { color: var(--c-danger); }
+.ico { width: 44rpx; font-size: 32rpx; margin-right: 16rpx; }
+.label { flex: 1; font-size: 28rpx; }
+.value { font-size: 26rpx; color: var(--c-text-weak); margin-right: 12rpx; }
+.badge { background: var(--c-danger); color: #fff; font-size: 20rpx; border-radius: 999rpx; padding: 2rpx 12rpx; margin-right: 12rpx; }
+.arrow { color: var(--c-text-weak); font-size: 36rpx; }

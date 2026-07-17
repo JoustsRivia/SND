@@ -1,0 +1,18 @@
+<!-- pages/profile/profile.wxml —— 我的 -->
+<view class="hero fade-in">
+  <view class="avatar">{{avatarText}}</view>
+  <view class="info">
+    <text class="name">{{profile.nickName || profile.username || '未命名用户'}}</text>
+    <view class="sub-row">
+      <text class="role-pill">{{roleText || '成员'}}</text>
+      <text wx:if="{{orgName}}" class="org">{{orgName}}</text>
+    </view>
+  </view>
+</view>
+
+<stats-card wx:if="{{stats.length}}" items="{{stats}}" columns="3" />
+
+<menu-list wx:if="{{groups.length}}" groups="{{groups}}" bind:select="onSelect" />
+
+<view class="ver">工器具安全管理 · V1.0</view>
+<view class="safe-bottom"></view>

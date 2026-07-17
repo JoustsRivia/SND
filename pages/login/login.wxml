@@ -1,0 +1,60 @@
+<!-- pages/login/login.wxml —— 登录页（hero 渐变头 + 上浮卡片，与主 tab 视觉统一） -->
+<view class="login">
+  <view class="hero login-hero">
+    <view class="brand-sub">SND 智慧安监系统</view>
+    <view class="brand-title">工器具安全管理平台</view>
+  </view>
+
+  <view class="form-wrap">
+    <view class="form card">
+      <!-- 模式切换：已注册走登录，新用户走注册 -->
+      <view class="seg">
+        <view class="seg-item {{mode==='login'?'seg-on':''}}" data-mode="login" bindtap="onMode">登录</view>
+        <view class="seg-item {{mode==='register'?'seg-on':''}}" data-mode="register" bindtap="onMode">注册</view>
+      </view>
+
+      <!-- 注册专属：角色 + 单位 + 机构/班组 -->
+      <block wx:if="{{mode==='register'}}">
+        <view class="form-row">
+          <text class="label">角色</text>
+          <picker mode="selector" range="{{roles}}" range-key="name" value="{{roleIndex}}" bindchange="onRoleChange">
+            <view class="picker">{{roles[roleIndex].name}} ▾</view>
+          </picker>
+        </view>
+        <view class="role-desc">ⓘ {{roles[roleIndex].desc}}</view>
+
+        <view class="form-row">
+          <text class="label">所属单位</text>
+          <picker mode="selector" range="{{units}}" range-key="name" value="{{unitIndex}}" bindchange="onUnitChange">
+            <view class="picker">{{units[unitIndex].name}} ▾</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <text class="label">机构/班组</text>
+          <picker mode="selector" range="{{orgOptions}}" range-key="label" value="{{orgIndex}}" bindchange="onOrgChange">
+            <view class="picker">{{orgOptions[orgIndex].label}} ▾</view>
+          </picker>
+        </view>
+      </block>
+
+      <view class="form-row">
+        <text class="label">用户名</text>
+        <input class="input" placeholder="请输入用户名" value="{{username}}" bindinput="onUserInput" />
+      </view>
+      <view class="form-row">
+        <text class="label">密码</text>
+        <input class="input" password placeholder="请输入密码" value="{{password}}" bindinput="onPwdInput" />
+      </view>
+      <view wx:if="{{mode==='register'}}" class="form-row">
+        <text class="label">昵称</text>
+        <input class="input" placeholder="选填，默认同用户名" value="{{nickname}}" bindinput="onNickInput" />
+      </view>
+
+      <button wx:if="{{mode==='login'}}" type="primary" loading="{{loading}}" bindtap="onLogin">登 录</button>
+      <button wx:else type="primary" loading="{{loading}}" bindtap="onRegister">注册并登录</button>
+
+      <view class="note">🔒 专班负责人、项目部负责人、安监部管理人员由系统管理员分配</view>
+      <view wx:if="{{mode==='login'}}" class="forgot" bindtap="onForgot">忘记密码？<text class="link">立即找回</text></view>
+    </view>
+  </view>
+</view>

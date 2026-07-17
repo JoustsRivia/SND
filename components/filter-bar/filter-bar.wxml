@@ -1,0 +1,15 @@
+<!-- components/filter-bar/filter-bar.wxml -->
+<view class="fbar">
+  <scroll-view wx:if="{{tabs.length}}" scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+      class="tab {{activeTab === item.key ? 'on' : ''}}"
+      data-key="{{item.key}}" bindtap="onTab">
+      {{item.label}}<text wx:if="{{item.count != null}}" class="cnt">{{item.count}}</text>
+    </view>
+  </scroll-view>
+  <view wx:if="{{chipList.length}}" class="chips">
+    <view wx:for="{{chipList}}" wx:key="key"
+      class="chip {{item.on ? 'on' : ''}}"
+      data-key="{{item.key}}" bindtap="onChip">{{item.label}}</view>
+  </view>
+</view>

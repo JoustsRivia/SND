@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "stats-card": "../../components/stats-card/stats-card",
+    "filter-bar": "../../components/filter-bar/filter-bar"
+  },
+  "navigationBarTitleText": "消息中心",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+}

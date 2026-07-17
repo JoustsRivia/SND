@@ -1,0 +1,19 @@
+<!-- pkg-barcode/pages/batch/batch.wxml —— M14 批量生成条码 -->
+<view class="batch">
+  <view class="card">
+    <text class="sec-title">选择器具（已选 {{selected.length}}）</text>
+    <view wx:for="{{list}}" wx:key="_id" class="tool" data-id="{{item._id}}" bindtap="onToggle">
+      <text>{{item.name}}（{{item.code}}）</text>
+      <text class="tick {{selected.indexOf(item._id) >= 0 ? 'on' : ''}}">{{selected.indexOf(item._id) >= 0 ? '✓' : ''}}</text>
+    </view>
+    <button type="primary" loading="{{generating}}" bindtap="onGen">批量生成条码</button>
+  </view>
+
+  <view wx:if="{{result}}" class="card">
+    <text class="sec-title">生成结果（{{result.count}}）</text>
+    <view wx:for="{{result.list}}" wx:key="_id" class="rez">
+      <text class="rn">{{item.name}}</text>
+      <text class="rc">{{item.code}} · {{item.qr}}</text>
+    </view>
+  </view>
+</view>

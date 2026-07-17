@@ -1,0 +1,10 @@
+<!-- components/stats-card/stats-card.wxml -->
+<view class="scard">
+  <text wx:if="{{title}}" class="title">{{title}}</text>
+  <view class="grid">
+    <view wx:for="{{items}}" wx:key="label" class="cell" style="width: {{100 / columns}}%;">
+      <text class="num" style="color: {{item.color || 'var(--c-primary)'}};">{{item.value}}</text>
+      <text class="lbl">{{item.label}}</text>
+    </view>
+  </view>
+</view>

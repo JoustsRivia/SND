@@ -1,0 +1,7 @@
+<!-- components/quick-actions/quick-actions.wxml -->
+<view class="qa">
+  <view wx:for="{{actions}}" wx:key="key" class="act" data-key="{{item.key}}" bindtap="onTap">
+    <view class="ico {{item.type || ''}}">{{item.icon || '·'}}</view>
+    <text class="lbl">{{item.label}}</text>
+  </view>
+</view>

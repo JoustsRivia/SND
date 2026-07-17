@@ -1,0 +1,10 @@
+/* components/filter-bar/filter-bar.wxss */
+.fbar { background: var(--c-card); padding: 16rpx 0; }
+.tabs { white-space: nowrap; display: flex; padding: 0 24rpx; }
+.tab { display: inline-block; padding: 12rpx 24rpx; font-size: 28rpx; color: var(--c-text-weak); position: relative; }
+.tab.on { color: var(--c-primary); font-weight: 600; }
+.tab.on::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: 0; width: 40rpx; height: 4rpx; background: var(--c-primary); border-radius: 2rpx; }
+.cnt { font-size: 22rpx; margin-left: 6rpx; }
+.chips { display: flex; flex-wrap: wrap; padding: 12rpx 24rpx 4rpx; gap: 16rpx; }
+.chip { padding: 8rpx 22rpx; font-size: 24rpx; border-radius: 999rpx; background: var(--c-surface); color: var(--c-text-muted); }
+.chip.on { background: var(--c-tint-primary); color: var(--c-primary); }

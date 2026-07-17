@@ -1,0 +1,31 @@
+/* pages/message/message.wxss —— 消息中心 */
+.bar { display: flex; align-items: center; }
+.mark-all { font-size: var(--fs-sm); color: var(--c-primary); padding: 0 var(--sp-3); flex-shrink: 0; }
+.list { padding: 0 var(--sp-3); }
+.msg {
+  display: flex; align-items: stretch;
+  background: var(--c-card); border-radius: var(--r-md);
+  padding: var(--sp-3); margin-bottom: var(--sp-2);
+  box-shadow: var(--sh-card); position: relative; overflow: hidden;
+}
+.msg-bar { width: 8rpx; border-radius: var(--r-pill); flex-shrink: 0; margin-right: var(--sp-3); }
+.msg.lv-danger .msg-bar { background: var(--c-danger); }
+.msg.lv-warning .msg-bar { background: var(--c-warning); }
+.msg.lv-info .msg-bar { background: var(--c-info); }
+.msg-main { flex: 1; min-width: 0; }
+.msg-top { display: flex; align-items: center; }
+.lv {
+  width: 44rpx; height: 44rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24rpx; margin-right: 16rpx; color: #fff; flex-shrink: 0;
+}
+.lv.danger { background: var(--c-danger); }
+.lv.warning { background: var(--c-warning); }
+.lv.info { background: var(--c-info); }
+.title { flex: 1; font-size: 28rpx; font-weight: 600; color: var(--c-text); }
+.dot { width: 16rpx; height: 16rpx; border-radius: 50%; background: var(--c-danger); margin-left: 12rpx; flex-shrink: 0; }
+.content { display: block; margin-top: 12rpx; font-size: 24rpx; color: var(--c-text-muted); line-height: 1.5; }
+.time { display: block; margin-top: 12rpx; font-size: 22rpx; color: var(--c-text-weak); }
+.msg.read { opacity: 0.62; }
+.msg.read .dot { display: none; }
+.loading { text-align: center; }

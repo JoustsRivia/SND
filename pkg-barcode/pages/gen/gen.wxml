@@ -1,0 +1,32 @@
+<!-- pkg-barcode/pages/gen/gen.wxml —— M14.1 真实二维码生成与标签输出 -->
+<view class="gen">
+  <view class="card">
+    <view class="row"><text class="label">选择器具</text>
+      <picker mode="selector" range="{{list}}" range-key="name" value="{{idx}}" bindchange="onPick">
+        <view class="picker">{{idx<0 ? '暂无器具' : list[idx].name + '（' + list[idx].code + '）'}}▾</view>
+      </picker>
+    </view>
+    <button class="btn-primary" bindtap="onGen">生成二维码</button>
+  </view>
+
+  <view wx:if="{{code}}" class="card qr-card">
+    <view class="qr-title">器具二维码（可扫码识别）</view>
+    <view class="qr-wrap">
+      <canvas type="2d" id="qr" class="qr-canvas"></canvas>
+    </view>
+    <view class="qr-meta">
+      <text>编号：{{code.code}}</text>
+      <text>名称：{{code.name}}</text>
+      <text>有效截止：{{code.expireAt || '—'}} · 存放：{{code.store || '—'}}</text>
+    </view>
+    <button wx:if="{{rendered}}" class="btn-outline" loading="{{saving}}" bindtap="onSave">保存标签图片</button>
+  </view>
+
+  <view wx:if="{{label}}" class="card label-prev">
+    <view class="title">打印标签预览</view>
+    <view class="kv"><text>名称</text><text>{{label.name}}</text></view>
+    <view class="kv"><text>编号</text><text>{{label.code}}</text></view>
+    <view class="kv"><text>存放</text><text>{{label.store || '—'}} · 保管：{{label.keeper || '—'}}</text></view>
+    <view class="kv"><text>有效期至</text><text>{{label.expireAt || '—'}}</text></view>
+  </view>
+</view>

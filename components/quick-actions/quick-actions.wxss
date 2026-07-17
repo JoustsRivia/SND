@@ -1,0 +1,9 @@
+/* components/quick-actions/quick-actions.wxss */
+.qa { display: flex; flex-wrap: wrap; background: var(--c-card); border-radius: var(--r-md); padding: 24rpx; margin: var(--sp-3); }
+.act { width: 25%; display: flex; flex-direction: column; align-items: center; padding: 16rpx 0; box-sizing: border-box; }
+.ico { width: 88rpx; height: 88rpx; border-radius: 24rpx; background: var(--c-tint-primary); color: var(--c-primary); display: flex; align-items: center; justify-content: center; font-size: 40rpx; }
+.ico.primary { background: var(--c-tint-primary); color: var(--c-primary); }
+.ico.success { background: var(--c-tint-success); color: var(--c-success); }
+.ico.warning { background: var(--c-tint-warning); color: var(--c-warning); }
+.ico.danger  { background: var(--c-tint-danger);  color: var(--c-danger); }
+.lbl { margin-top: 12rpx; font-size: 24rpx; color: var(--c-text); }

@@ -1,0 +1,16 @@
+/* components/record-timeline/record-timeline.wxss */
+.tl { background: var(--c-card); border-radius: var(--r-md); padding: 24rpx; margin: var(--sp-3); }
+.empty { color: var(--c-text-weak); text-align: center; padding: 30rpx 0; }
+.item { display: flex; padding-bottom: 28rpx; position: relative; }
+.item:last-child { padding-bottom: 0; }
+.dot { width: 16rpx; height: 16rpx; border-radius: 50%; background: var(--c-primary); margin-top: 10rpx; margin-right: 20rpx; flex-shrink: 0; }
+.dot.normal  { background: var(--c-primary); }
+.dot.success { background: var(--c-success); }
+.dot.warning { background: var(--c-warning); }
+.dot.danger  { background: var(--c-danger); }
+.body { flex: 1; border-left: 2rpx solid var(--c-divider); padding-left: 24rpx; margin-left: -28rpx; padding-bottom: 4rpx; }
+.top { display: flex; justify-content: space-between; align-items: baseline; }
+.title { font-size: 28rpx; font-weight: 600; }
+.time { font-size: 22rpx; color: var(--c-text-weak); }
+.desc { display: block; margin-top: 8rpx; font-size: 24rpx; color: var(--c-text); }
+.op { display: block; margin-top: 6rpx; font-size: 22rpx; color: var(--c-text-weak); }
