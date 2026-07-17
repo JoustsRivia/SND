@@ -1,0 +1,46 @@
+<!-- pkg-check/pages/assessment/assessment.wxml —— M10 考核评比 -->
+<view class="assess">
+  <view class="card form">
+    <text class="sec-title">考核评分</text>
+    <view class="row col">
+      <text class="label">被考核对象</text>
+      <input class="inp" placeholder="如：#3班组 / 张三" value="{{targetName}}" bindinput="bindTarget" />
+    </view>
+    <view class="row col">
+      <text class="label">对象编号</text>
+      <input class="inp" placeholder="班组 / 工号 ID" value="{{targetId}}" bindinput="bindTargetId" />
+    </view>
+    <view class="row">
+      <text class="label">维度</text>
+      <picker mode="selector" range="{{dimLabels}}" value="{{dimIdx}}" bindchange="onPickDim">
+        <view class="picker">{{dimLabels[dimIdx]}}▾</view>
+      </picker>
+    </view>
+    <view class="row">
+      <text class="label">得分</text>
+      <picker mode="selector" range="{{scoreLabels}}" value="2" bindchange="onPickScore">
+        <view class="picker">{{score}} 分▾</view>
+      </picker>
+    </view>
+    <view class="row col">
+      <text class="label">备注</text>
+      <textarea class="area" placeholder="考核说明…" value="{{note}}" bindinput="bindNote" />
+    </view>
+    <button type="primary" loading="{{submitting}}" bindtap="onSubmit">提交评分</button>
+  </view>
+
+  <view class="card">
+    <text class="sec-title">考核记录</text>
+    <view wx:if="{{loading}}" class="muted center">加载中…</view>
+    <block wx:else>
+      <view wx:if="{{list.length === 0}}" class="muted center">暂无考核记录</view>
+      <view wx:for="{{list}}" wx:key="_id" class="item">
+        <view class="row" style="justify-content: space-between;">
+          <text class="name">{{item.targetName}}</text>
+          <status-tag status="{{item._status}}" text="{{item._statusText}}" size="sm" />
+        </view>
+        <view class="meta"><text class="muted">{{item.dimension}}　得分：{{item.score}}　{{item.note}}</text></view>
+      </view>
+    </block>
+  </view>
+</view>

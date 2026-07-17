@@ -1,0 +1,7 @@
+<!-- pkg-stats/pages/dashboard/dashboard.wxml —— M12.1 统计分析看板 -->
+<view class="dashboard">
+  <view wx:if="{{loading}}" class="card muted">加载中…</view>
+  <view wx:else class="card">
+    <stats-card items="{{items}}" columns="{{4}}" />
+  </view>
+</view>

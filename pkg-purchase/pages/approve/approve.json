@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "record-timeline": "/components/record-timeline/record-timeline"
+  },
+  "navigationBarTitleText": "采购审批"
+}

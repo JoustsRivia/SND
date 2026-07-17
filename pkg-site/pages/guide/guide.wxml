@@ -1,0 +1,26 @@
+<!-- pkg-site/pages/guide/guide.wxml —— M6 操作规程指引 -->
+<view class="hero">
+  <text class="h-title">操作规程</text>
+  <text class="h-sub">点击展开查看器具安全操作要点</text>
+</view>
+
+<view wx:if="{{loading}}" class="loading">加载中…</view>
+<view wx:elif="{{list.length === 0}}" class="empty">
+  <view class="empty-icon">📄</view>
+  <view class="empty-title">暂无操作规程</view>
+  <view class="empty-desc">管理员可在系统后台维护规程库</view>
+</view>
+
+<view wx:else class="list">
+  <view wx:for="{{list}}" wx:key="_id" class="card">
+    <view class="row" data-id="{{item._id}}" bindtap="onTap">
+      <view class="info">
+        <text class="title">{{item.title}}</text>
+        <text wx:if="{{item.category}}" class="cat">{{item.category}}</text>
+      </view>
+      <text class="arrow {{selectedId === item._id ? 'open' : ''}}">›</text>
+    </view>
+    <view wx:if="{{selectedId === item._id}}" class="content">{{item.content}}</view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>

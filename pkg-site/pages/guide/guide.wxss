@@ -1,0 +1,22 @@
+/* pkg-site/pages/guide/guide.wxss —— 操作规程 */
+.hero {
+  margin: var(--sp-3); padding: var(--sp-4);
+  border-radius: var(--r-lg); background: var(--c-hero-grad); color: #fff;
+  box-shadow: var(--sh-float);
+}
+.h-title { display: block; font-size: 36rpx; font-weight: 700; }
+.h-sub { display: block; margin-top: 8rpx; font-size: 24rpx; opacity: 0.88; }
+
+.list { padding: 0 var(--sp-3); }
+.card { background: var(--c-card); border-radius: var(--r-md); box-shadow: var(--sh-card); padding: var(--sp-3); margin-bottom: var(--sp-2); }
+.row { display: flex; align-items: center; justify-content: space-between; }
+.info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.title { font-size: 30rpx; font-weight: 600; color: var(--c-text); }
+.cat { font-size: 24rpx; margin-top: 6rpx; color: var(--c-text-weak); }
+.arrow { font-size: 40rpx; color: var(--c-text-weak); transform: rotate(0deg); transition: transform 0.2s, color 0.2s; margin-left: 16rpx; }
+.arrow.open { transform: rotate(90deg); color: var(--c-primary); }
+.content {
+  margin-top: 20rpx; padding-top: 20rpx; border-top: 1rpx solid var(--c-divider);
+  font-size: 28rpx; line-height: 1.7; color: var(--c-text-sub); white-space: pre-wrap;
+}
+.loading { text-align: center; }

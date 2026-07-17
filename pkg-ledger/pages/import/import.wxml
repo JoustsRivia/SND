@@ -1,0 +1,19 @@
+<!-- pkg-ledger/pages/import/import.wxml —— 问题5：台账批量导入 -->
+<view class="imp">
+  <view class="tip card">
+    <view class="tip-title">📥 批量导入工器具</view>
+    <view class="tip-desc">先下载模板，按列填写后粘贴 CSV 文本到下方，点击「解析并导入」。</view>
+    <view class="tip-hint">📌 {{catHint}}</view>
+    <view class="tip-hint">📌 {{srcHint}}</view>
+    <button class="btn-tpl" bindtap="onDownloadTpl">⬇️ 下载导入模板</button>
+  </view>
+
+  <view class="card">
+    <view class="ta-label">粘贴 CSV 内容（含表头）</view>
+    <textarea class="ta" value="{{text}}" bindinput="onText" placeholder="编号,名称,类别,规格,…&#10;（可直接从 Excel 复制）" auto-height maxlength="-1" />
+  </view>
+
+  <button class="btn-imp" type="primary" loading="{{importing}}" bindtap="onImport">解析并导入</button>
+  <view wx:if="{{result}}" class="result">{{result}}</view>
+  <button class="btn-back" bindtap="onBack">返回台账</button>
+</view>

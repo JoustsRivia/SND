@@ -1,0 +1,27 @@
+<!-- pkg-maint/pages/repair/repair.wxml -->
+<view class="repair">
+  <view wx:if="{{loading}}" class="card muted">加载中…</view>
+  <view wx:elif="{{list.length === 0}}" class="card muted">暂无报修记录</view>
+
+  <view wx:for="{{list}}" wx:key="_id" class="card">
+    <view class="row" data-id="{{item._id}}" bindtap="onTap">
+      <view class="info">
+        <text class="title">器具 {{item.toolId}}</text>
+        <text class="muted sub">{{item.fault}}</text>
+      </view>
+      <status-tag status="{{item.status}}" size="sm" />
+    </view>
+
+    <view wx:if="{{selectedId === item._id}}" class="detail">
+      <view class="line"><text class="muted">故障现象：</text><text>{{item.fault}}</text></view>
+      <view class="line"><text class="muted">情况说明：</text><text>{{item.desc || '—'}}</text></view>
+      <view class="line"><text class="muted">上报人：</text><text>{{item.reporter || '—'}}</text></view>
+
+      <view class="actions">
+        <button size="mini" type="primary" bindtap="onApprove">通过</button>
+        <button size="mini" bindtap="onRecord">维修登记</button>
+        <button size="mini" type="warn" bindtap="onRecheck">复检合格</button>
+      </view>
+    </view>
+  </view>
+</view>

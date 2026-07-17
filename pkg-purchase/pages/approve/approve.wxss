@@ -1,0 +1,7 @@
+/* pkg-purchase/pages/approve/approve.wxss */
+.approve { padding-bottom: 40rpx; }
+.name { font-size: 30rpx; font-weight: 600; }
+.muted { display: block; margin-top: 8rpx; }
+.reason { margin-top: 8rpx; }
+.acts { display: flex; gap: 20rpx; margin-top: 24rpx; justify-content: flex-end; }
+.approve button { background: var(--c-primary); }

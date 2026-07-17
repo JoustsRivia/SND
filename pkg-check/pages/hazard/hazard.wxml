@@ -1,0 +1,38 @@
+<!-- pkg-check/pages/hazard/hazard.wxml —— M10.2 隐患管理 -->
+<view class="hazard">
+  <view class="card form">
+    <text class="sec-title">隐患上报</text>
+    <view class="row col">
+      <text class="label">隐患描述</text>
+      <textarea class="area" placeholder="请描述隐患内容…" value="{{desc}}" bindinput="bindDesc" />
+    </view>
+    <view class="row">
+      <text class="label">级别</text>
+      <picker mode="selector" range="{{levelLabels}}" value="{{levelIdx}}" bindchange="onPickLevel">
+        <view class="picker">{{levelLabels[levelIdx]}}▾</view>
+      </picker>
+    </view>
+    <view class="row col">
+      <text class="label">位置</text>
+      <input class="inp" placeholder="如：#3配电室" value="{{location}}" bindinput="bindLocation" />
+    </view>
+    <button type="primary" loading="{{submitting}}" bindtap="onSubmit">提交上报</button>
+  </view>
+
+  <view class="card">
+    <text class="sec-title">隐患列表</text>
+    <view wx:if="{{loading}}" class="muted center">加载中…</view>
+    <block wx:else>
+      <view wx:if="{{list.length === 0}}" class="muted center">暂无隐患</view>
+      <view wx:for="{{list}}" wx:key="_id" class="hz" data-item="{{item}}" bindtap="onTapHazard">
+        <view class="row" style="justify-content: space-between;">
+          <text class="h-desc">{{item.desc}}</text>
+          <status-tag status="{{item.status}}" text="{{item._statusText}}" size="sm" />
+        </view>
+        <view class="meta"><text class="muted">级别：{{item.level}}　位置：{{item.location}}</text></view>
+        <view class="meta" wx:if="{{item._assignee}}"><text class="muted">整改人：{{item._assignee}}　期限：{{item._dueDate}}</text></view>
+        <record-timeline records="{{item._records}}" emptyText="暂无跟踪记录" />
+      </view>
+    </block>
+  </view>
+</view>

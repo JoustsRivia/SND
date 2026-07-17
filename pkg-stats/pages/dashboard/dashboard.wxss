@@ -1,0 +1,2 @@
+/* pkg-stats/pages/dashboard/dashboard.wxss */
+.dashboard { padding-bottom: 40rpx; }

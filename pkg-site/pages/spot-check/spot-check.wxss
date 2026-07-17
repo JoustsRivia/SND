@@ -1,0 +1,31 @@
+/* pkg-site/pages/spot-check/spot-check.wxss —— 现场点检 */
+.spot-check { padding-bottom: 40rpx; }
+.hero {
+  margin: var(--sp-3); padding: var(--sp-4);
+  border-radius: var(--r-lg); background: var(--c-hero-grad); color: #fff;
+  box-shadow: var(--sh-float);
+}
+.h-title { display: block; font-size: 36rpx; font-weight: 700; }
+.h-sub { display: block; margin-top: 8rpx; font-size: 24rpx; opacity: 0.88; }
+
+.card { padding: var(--sp-3); margin: var(--sp-3); background: var(--c-card); border-radius: var(--r-md); box-shadow: var(--sh-card); }
+.row { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid var(--c-divider); }
+.row:last-child { border-bottom: none; }
+.row.col { flex-direction: column; align-items: flex-start; }
+.label { font-size: 28rpx; color: var(--c-text); }
+.label.blk { display: block; margin-bottom: 8rpx; font-weight: 600; }
+.inp { width: 100%; margin-top: 12rpx; font-size: 28rpx; }
+
+.empty { padding: var(--sp-4) 0; text-align: center; }
+.empty-icon { font-size: 72rpx; }
+.empty-title { font-size: var(--fs-lg); color: var(--c-text-muted); font-weight: 600; margin-top: var(--sp-1); }
+
+.check-row { display: flex; align-items: center; justify-content: space-between; padding: 26rpx 0; border-bottom: 1rpx solid var(--c-divider); }
+.check-row:last-child { border-bottom: none; }
+.ctext { font-size: 28rpx; flex: 1; margin-right: 16rpx; color: var(--c-text); }
+.ctext.ok { color: var(--c-text); }
+.ctext.bad { color: var(--c-danger); font-weight: 600; }
+.area { width: 100%; margin-top: 12rpx; height: 150rpx; font-size: 28rpx; background: var(--c-surface); border-radius: var(--r-sm); padding: 16rpx; }
+
+.btn.block { margin: var(--sp-3); }
+.btn.dis { opacity: 0.6; }

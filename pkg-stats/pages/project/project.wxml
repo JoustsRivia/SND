@@ -1,0 +1,15 @@
+<!-- pkg-stats/pages/project/project.wxml —— M12 项目部看板 -->
+<view class="project">
+  <view class="card">
+    <text class="sec-title">按项目部筛选</text>
+    <view class="row">
+      <input class="inp" placeholder="输入项目部 / 组织编号" value="{{orgId}}" bindinput="bindOrg" />
+      <button size="mini" type="primary" bindtap="onQuery">查询</button>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="card muted center">加载中…</view>
+  <view wx:else class="card">
+    <stats-card items="{{items}}" columns="{{4}}" />
+  </view>
+</view>

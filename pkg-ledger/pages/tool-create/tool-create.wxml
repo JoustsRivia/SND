@@ -1,0 +1,36 @@
+<!-- pkg-ledger/pages/tool-create/tool-create.wxml —— M1.3.1 器具录入 -->
+<view class="form">
+  <view class="card">
+    <view class="row">
+      <text class="label">器具类别</text>
+      <picker mode="selector" range="{{categories}}" range-key="name" value="{{catIndex}}" bindchange="onCat">
+        <view class="picker">{{categories[catIndex].name}} ▾</view>
+      </picker>
+    </view>
+    <view class="row">
+      <text class="label">器具来源</text>
+      <picker mode="selector" range="{{sources}}" range-key="name" value="{{sourceIndex}}" bindchange="onSource">
+        <view class="picker">{{sources[sourceIndex].name}} ▾</view>
+      </picker>
+    </view>
+    <view class="row"><text class="label">名称</text><input class="input" placeholder="如：绝缘手套（12kV）" value="{{form.name}}" data-k="name" bindinput="bind" /></view>
+    <view class="row"><text class="label">规格型号</text><input class="input" placeholder="如：12kV" value="{{form.spec}}" data-k="spec" bindinput="bind" /></view>
+    <view class="row"><text class="label">出厂编号</text><input class="input" placeholder="选填" value="{{form.factoryNo}}" data-k="factoryNo" bindinput="bind" /></view>
+    <view class="row"><text class="label">采购日期</text><input class="input" type="date" value="{{form.purchaseDate}}" data-k="purchaseDate" bindinput="bind" /></view>
+    <view class="row"><text class="label">检验周期(月)</text><input class="input" type="number" value="{{form.testPeriod}}" data-k="testPeriod" bindinput="bind" /></view>
+    <view class="row"><text class="label">上次试验</text><input class="input" type="date" value="{{form.lastTestDate}}" data-k="lastTestDate" bindinput="bind" /></view>
+    <view class="row"><text class="label">有效截止</text><input class="input" type="date" value="{{form.expireAt}}" data-k="expireAt" bindinput="bind" /></view>
+    <view class="row"><text class="label">存放库房</text><input class="input" placeholder="如：二班库房·A货架03" value="{{form.store}}" data-k="store" bindinput="bind" /></view>
+    <view class="row"><text class="label">保管责任人</text><input class="input" placeholder="如：张工" value="{{form.keeper}}" data-k="keeper" bindinput="bind" /></view>
+
+    <!-- M1.3.7 租赁专项字段（仅来源=租赁时显示） -->
+    <block wx:if="{{sourceIndex === 1}}">
+      <view class="row lease-head"><text class="label">租赁信息</text><text class="lease-tip">检测合格证须随器入档</text></view>
+      <view class="row"><text class="label">出租单位</text><input class="input" placeholder="如：XX机械租赁公司" value="{{form.leaseUnit}}" data-k="leaseUnit" bindinput="bind" /></view>
+      <view class="row"><text class="label">合格证号</text><input class="input" placeholder="检测合格证编号" value="{{form.certNo}}" data-k="certNo" bindinput="bind" /></view>
+      <view class="row"><text class="label">现场操作人</text><input class="input" placeholder="如：李工" value="{{form.operator}}" data-k="operator" bindinput="bind" /></view>
+    </block>
+  </view>
+
+  <button type="primary" loading="{{submitting}}" bindtap="onSubmit">{{editMode ? '保存修改' : '保存并生成编号'}}</button>
+</view>

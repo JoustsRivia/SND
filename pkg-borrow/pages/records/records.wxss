@@ -1,0 +1,10 @@
+/* pkg-borrow/pages/records/records.wxss */
+.rec { padding-bottom: 40rpx; }
+.tabs { display: flex; padding: 0 var(--sp-3); background: #fff; position: sticky; top: 0; z-index: 1; }
+.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 28rpx; color: var(--c-text-weak); }
+.tab.on { color: var(--c-primary); font-weight: 600; border-bottom: 4rpx solid var(--c-primary); }
+.card { display: flex; flex-direction: column; }
+.card .muted { margin-top: 8rpx; font-size: 24rpx; }
+.tag { font-size: 22rpx; padding: 2rpx 14rpx; border-radius: 8rpx; }
+.tag-b { background: var(--c-info-bg); color: var(--c-primary); }
+.tag-r { background: var(--c-success-bg); color: var(--c-success); }

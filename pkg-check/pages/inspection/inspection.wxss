@@ -1,0 +1,13 @@
+/* pkg-check/pages/inspection/inspection.wxss */
+.inspection { padding-bottom: 40rpx; }
+.center { text-align: center; padding: 40rpx 0; }
+.t-title { font-size: 30rpx; font-weight: 600; }
+.meta { display: flex; flex-wrap: wrap; gap: 24rpx; margin-top: 12rpx; font-size: 26rpx; }
+.form { border: 2rpx solid var(--c-primary); }
+.f-title { font-size: 30rpx; font-weight: 600; }
+.cancel { color: var(--c-text-weak); font-size: 26rpx; }
+.row.col { flex-direction: column; align-items: flex-start; margin-top: 20rpx; }
+.label { font-size: 28rpx; margin-bottom: 8rpx; }
+.inp { width: 100%; font-size: 28rpx; border-bottom: 1rpx solid var(--c-divider); padding: 12rpx 0; }
+.area { width: 100%; margin-top: 12rpx; height: 140rpx; font-size: 28rpx; }
+.form button { margin-top: 24rpx; background: var(--c-primary); }

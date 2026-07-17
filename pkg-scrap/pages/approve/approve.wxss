@@ -1,0 +1,7 @@
+/* pkg-scrap/pages/approve/approve.wxss */
+.approve { padding-bottom: 40rpx; }
+.card { display: flex; flex-direction: column; }
+.card .name { font-size: 30rpx; font-weight: 600; }
+.card .muted { margin-top: 8rpx; font-size: 24rpx; }
+.acts { display: flex; gap: 24rpx; margin-top: 24rpx; }
+.acts button { margin: 0; flex: 1; }

@@ -1,0 +1,13 @@
+/* pkg-ledger/pages/import/import.wxss —— 批量导入 */
+.imp { padding: var(--sp-3); }
+.tip { background: var(--c-card); border-radius: var(--r-lg); padding: var(--sp-3); box-shadow: var(--sh-card); margin-bottom: var(--sp-3); }
+.tip-title { font-size: 32rpx; font-weight: 700; color: var(--c-text); }
+.tip-desc { font-size: 26rpx; color: var(--c-text-sub); margin-top: 12rpx; line-height: 1.5; }
+.tip-hint { font-size: 22rpx; color: var(--c-info); margin-top: 12rpx; line-height: 1.4; }
+.btn-tpl { margin-top: 24rpx; background: var(--c-info-bg); color: var(--c-info); font-size: 28rpx; }
+.card { background: var(--c-card); border-radius: var(--r-lg); padding: var(--sp-3); box-shadow: var(--sh-card); margin-bottom: var(--sp-3); }
+.ta-label { font-size: 26rpx; color: var(--c-text-sub); margin-bottom: 16rpx; }
+.ta { width: 100%; min-height: 320rpx; font-size: 24rpx; line-height: 1.6; color: var(--c-text); border: 1rpx solid var(--c-divider); border-radius: var(--r-md); padding: 16rpx; box-sizing: border-box; }
+.btn-imp { background: var(--c-primary-grad); }
+.result { text-align: center; color: var(--c-success); font-size: 28rpx; font-weight: 600; margin: var(--sp-2) 0; }
+.btn-back { margin-top: var(--sp-2); background: var(--c-bg); color: var(--c-text-sub); }

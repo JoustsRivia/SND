@@ -1,0 +1,29 @@
+<!-- pkg-scrap/pages/disposal/disposal.wxml —— M8.2 报废处置 -->
+<view class="disposal">
+  <block wx:if="{{!showForm}}">
+    <view wx:if="{{loading}}" class="muted card">加载中…</view>
+    <view wx:for="{{list}}" wx:key="_id" class="card" data-id="{{item._id}}" bindtap="openForm">
+      <view class="row" style="justify-content: space-between;">
+        <text class="name">{{item.name}}</text>
+        <text class="muted">{{item.code}}</text>
+      </view>
+      <text class="muted">已审批通过 · 待销毁处置</text>
+    </view>
+    <view wx:if="{{!loading && list.length === 0}}" class="muted card">暂无待处置报废</view>
+  </block>
+
+  <view wx:else class="card">
+    <view class="row"><text class="label">销毁方式</text>
+      <picker mode="selector" range="{{methods}}" range-key="name" value="{{mIdx}}" bindchange="onMethod">
+        <view class="picker">{{methods[mIdx].name}} ▾</view></picker></view>
+    <view class="row"><text class="label">销毁日期</text><input class="input" type="date" value="{{destroyedAt}}" bindinput="onDate" /></view>
+    <view class="row"><text class="label">经办人</text><input class="input" placeholder="姓名" value="{{handler}}" bindinput="onHandler" /></view>
+    <view class="row col"><text class="label">销毁照片</text>
+      <view class="photos">
+        <view wx:for="{{photos}}" wx:key="*this" class="ph">✓</view>
+        <view class="ph add" bindtap="onPhoto">＋</view>
+      </view>
+    </view>
+    <button type="primary" loading="{{submitting}}" bindtap="onSubmit">确认销毁并同步台账</button>
+  </view>
+</view>

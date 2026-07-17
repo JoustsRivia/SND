@@ -1,0 +1,23 @@
+<!-- pkg-stats/pages/report/report.wxml —— M12 报表导出 -->
+<view class="report">
+  <view wx:if="{{loading}}" class="card muted center">加载中…</view>
+  <block wx:else>
+    <view class="card">
+      <text class="sec-title">器具总数</text>
+      <text class="big">{{total}}</text>
+      <button size="mini" type="primary" bindtap="onCopy">复制报表</button>
+    </view>
+    <view class="card">
+      <text class="sec-title">按状态分布</text>
+      <view wx:for="{{byStatus}}" wx:key="name" class="line">
+        <text class="ln">{{item.name}}</text><text class="lnv">{{item.value}}</text>
+      </view>
+    </view>
+    <view class="card">
+      <text class="sec-title">按类别分布</text>
+      <view wx:for="{{byCategory}}" wx:key="name" class="line">
+        <text class="ln">{{item.name}}</text><text class="lnv">{{item.value}}</text>
+      </view>
+    </view>
+  </block>
+</view>

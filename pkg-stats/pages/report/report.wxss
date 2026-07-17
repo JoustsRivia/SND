@@ -1,0 +1,9 @@
+/* pkg-stats/pages/report/report.wxss */
+.report { padding-bottom: 40rpx; }
+.sec-title { font-size: 30rpx; font-weight: 600; display: block; margin-bottom: 16rpx; }
+.big { display: block; font-size: 64rpx; font-weight: 700; color: var(--c-primary); margin: 8rpx 0 16rpx; }
+.report .card button { background: var(--c-primary); }
+.line { display: flex; justify-content: space-between; padding: 16rpx 0; border-bottom: 1rpx solid var(--c-divider); }
+.ln { font-size: 28rpx; }
+.lnv { font-size: 28rpx; color: var(--c-text); font-weight: 600; }
+.center { text-align: center; }

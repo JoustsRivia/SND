@@ -1,0 +1,7 @@
+/* pkg-stats/pages/project/project.wxss */
+.project { padding-bottom: 40rpx; }
+.sec-title { font-size: 30rpx; font-weight: 600; display: block; margin-bottom: 16rpx; }
+.row { display: flex; align-items: center; }
+.inp { flex: 1; font-size: 28rpx; border-bottom: 1rpx solid var(--c-divider); padding: 12rpx 0; }
+.project .card button { margin-left: 16rpx; background: var(--c-primary); }
+.center { text-align: center; }

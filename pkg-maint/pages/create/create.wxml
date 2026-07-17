@@ -1,0 +1,45 @@
+<!-- pkg-maint/pages/create/create.wxml -->
+<view class="create">
+  <view class="card">
+    <view class="row col" style="align-items: flex-start;">
+      <text class="label">类型</text>
+      <radio-group class="radio" bindchange="onTypeChange">
+        <label class="opt"><radio value="maintenance" checked="{{type === 'maintenance'}}" color="#1A6BE0" />保养计划</label>
+        <label class="opt"><radio value="repair" checked="{{type === 'repair'}}" color="#1A6BE0" />故障报修</label>
+      </radio-group>
+    </view>
+
+    <view class="row col" style="align-items: flex-start;">
+      <text class="label">器具编号</text>
+      <input class="inp" placeholder="请输入器具编号" value="{{toolId}}" bindinput="bindToolId" />
+    </view>
+
+    <!-- 保养计划 -->
+    <block wx:if="{{type === 'maintenance'}}">
+      <view class="row" style="justify-content: space-between;">
+        <text class="label">计划日期</text>
+        <picker mode="date" value="{{planDate}}" bindchange="onDate">
+          <view class="picker">{{planDate || '请选择'}} ▾</view>
+        </picker>
+      </view>
+      <view class="row col" style="align-items: flex-start;">
+        <text class="label">保养内容</text>
+        <textarea class="area" placeholder="保养项目 / 标准 / 注意事项" value="{{content}}" bindinput="bindContent" />
+      </view>
+    </block>
+
+    <!-- 故障报修 -->
+    <block wx:else>
+      <view class="row col" style="align-items: flex-start;">
+        <text class="label">故障现象</text>
+        <textarea class="area" placeholder="异常表现 / 报错信息" value="{{fault}}" bindinput="bindFault" />
+      </view>
+      <view class="row col" style="align-items: flex-start;">
+        <text class="label">情况说明</text>
+        <textarea class="area" placeholder="影响范围 / 现场情况" value="{{desc}}" bindinput="bindDesc" />
+      </view>
+    </block>
+  </view>
+
+  <button type="primary" loading="{{submitting}}" bindtap="onSubmit">提交</button>
+</view>

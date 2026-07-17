@@ -1,0 +1,42 @@
+<!-- pkg-scrap/pages/apply/apply.wxml —— M8.1.2 报废申请 + M8.1.1 强制报废判定 -->
+<view class="apply">
+  <view class="card">
+    <view class="row"><text class="label">拟报废器具</text>
+      <picker wx:if="{{candidates.length}}" mode="selector" range="{{candidates}}" range-key="name" value="{{idx}}" bindchange="onPick">
+        <view class="picker">{{candidates[idx].name}}（{{candidates[idx].code}}）▾</view>
+      </picker>
+      <text wx:else class="muted">暂无禁用状态器具</text>
+    </view>
+
+    <!-- M8.1.1 强制报废 7 项自动判定 -->
+    <view class="row col judge-box" wx:if="{{judge}}">
+      <view class="judge-head">
+        <text class="label">强制报废判定</text>
+        <text class="tag {{judge.mustScrap ? 'tag-danger' : 'tag-ok'}}">{{judge.mustScrap ? '应强制报废' : '未命中强制项'}}</text>
+      </view>
+      <view class="rules">
+        <view wx:for="{{rules}}" wx:key="key"
+              class="rule {{symptoms.indexOf(item.key) >= 0 ? 'rule-on' : ''}}"
+              data-k="{{item.key}}" bindtap="toggleSymptom">
+          <text class="dot">{{symptoms.indexOf(item.key) >= 0 ? '✓' : ''}}</text>
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+      <view wx:if="{{judge.reasons.length}}" class="reasons">
+        命中：{{judge.reasons.join('、')}}
+      </view>
+    </view>
+
+    <view class="row col"><text class="label">报废原因</text>
+      <textarea class="area" placeholder="如：绝缘层击穿/金属构件永久变形/达到服役年限…" value="{{reason}}" bindinput="bindReason" />
+    </view>
+    <view class="row col"><text class="label">佐证照片</text>
+      <view class="photos">
+        <view wx:for="{{photos}}" wx:key="*this" class="ph">✓</view>
+        <view class="ph add" bindtap="onPhoto">＋</view>
+      </view>
+    </view>
+  </view>
+
+  <button type="primary" loading="{{submitting}}" bindtap="onSubmit">提交报废审批</button>
+</view>

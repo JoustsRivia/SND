@@ -1,0 +1,10 @@
+/* pkg-maint/pages/repair/repair.wxss */
+.repair { padding-bottom: 40rpx; }
+.row { display: flex; align-items: center; justify-content: space-between; }
+.info { display: flex; flex-direction: column; flex: 1; margin-right: 16rpx; }
+.title { font-size: 30rpx; font-weight: 600; }
+.sub { font-size: 24rpx; margin-top: 6rpx; }
+.detail { margin-top: 20rpx; padding-top: 20rpx; border-top: 1rpx solid var(--c-divider); }
+.line { font-size: 26rpx; line-height: 1.8; }
+.actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.actions button { flex: 1; margin: 0; }

@@ -1,0 +1,29 @@
+<!-- pkg-purchase/pages/apply/apply.wxml —— M2.1 采购申请 -->
+<view class="apply">
+  <view class="card">
+    <view class="row col"><text class="label">器具名称</text>
+      <input class="ipt" placeholder="请输入采购器具名称" value="{{name}}" bindinput="bindName" />
+    </view>
+    <view class="row"><text class="label">类别</text>
+      <picker mode="selector" range="{{categories}}" range-key="name" value="{{catIdx}}" bindchange="onPickCategory">
+        <view class="picker">{{categories[catIdx].name}}▾</view>
+      </picker>
+    </view>
+    <view class="row"><text class="label">数量</text>
+      <input class="ipt right" type="number" placeholder="请输入数量" value="{{qty}}" bindinput="bindQty" />
+    </view>
+    <view class="row"><text class="label">预算(元)</text>
+      <input class="ipt right" type="digit" placeholder="请输入预算金额" value="{{budget}}" bindinput="bindBudget" />
+    </view>
+    <view class="row col"><text class="label">申购事由</text>
+      <textarea class="area" placeholder="请说明申购原因/用途" value="{{reason}}" bindinput="bindReason" />
+    </view>
+    <view class="row"><text class="label">期望到货</text>
+      <picker mode="date" value="{{expectDate}}" bindchange="onPickDate">
+        <view class="picker">{{expectDate || '选择日期▾'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <button type="primary" loading="{{submitting}}" bindtap="onSubmit">提交采购申请</button>
+</view>

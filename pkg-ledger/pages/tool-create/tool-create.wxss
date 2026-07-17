@@ -1,0 +1,7 @@
+/* pkg-ledger/pages/tool-create/tool-create.wxss */
+.form { padding-bottom: 40rpx; }
+.row { display: flex; align-items: center; padding: 22rpx 0; border-bottom: 1rpx solid var(--c-divider); }
+.label { width: 180rpx; font-size: 28rpx; color: var(--c-text); }
+.picker { flex: 1; text-align: right; color: var(--c-text); }
+.input { flex: 1; text-align: right; font-size: 28rpx; }
+.form button { margin-top: 40rpx; background: var(--c-primary); }

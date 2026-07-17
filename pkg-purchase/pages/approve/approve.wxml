@@ -1,0 +1,19 @@
+<!-- pkg-purchase/pages/approve/approve.wxml —— M2.2 采购审批 -->
+<view class="approve">
+  <view wx:if="{{loading}}" class="muted card">加载中…</view>
+
+  <view wx:for="{{list}}" wx:key="_id" class="card" wx:if="{{!loading}}">
+    <view class="row" style="justify-content: space-between;">
+      <text class="name">{{item.name}}</text>
+      <text class="muted">数量 {{item.qty}}</text>
+    </view>
+    <text class="muted">申请人：{{item.applicant}} · 预算：{{item.budget}}</text>
+    <text wx:if="{{item.reason}}" class="muted reason">事由：{{item.reason}}</text>
+    <view class="acts">
+      <button size="mini" type="primary" data-id="{{item._id}}" data-pass="{{true}}" bindtap="onDecision" disabled="{{processing === item._id}}">通过</button>
+      <button size="mini" data-id="{{item._id}}" data-pass="{{false}}" bindtap="onDecision" disabled="{{processing === item._id}}">驳回</button>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && list.length === 0}}" class="muted card">暂无待审批采购</view>
+</view>
