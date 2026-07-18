@@ -33,6 +33,7 @@ async function seedOrgs() {
 }
 
 async function orgTree() {
+  await db.ensureCollection('orgs');
   let res = await db.listBy('orgs', {}, 200);
   if (!res.data || !res.data.length) {
     await seedOrgs();
@@ -119,6 +120,7 @@ async function userManage(payload) {
   const g = await requireAdmin();
   if (g.err) return g.err;
   const { op = 'list', id, data = {} } = payload;
+  await db.ensureCollection('users');
 
   if (op === 'list') {
     const res = await db.listBy('users', {}, 200);
@@ -188,6 +190,7 @@ async function seedAdmin(payload = {}) {
   const openid = getOpenid();
   const username = (payload.username || SEED_USERNAME).trim();
   const password = payload.password || SEED_PASSWORD;
+  await db.ensureCollection('users');
   // 已存在任一管理员则拒绝
   const admins = await db.listBy('users', {}, 200);
   const hasAdmin = admins.data && admins.data.some((u) => u.role === 'lead' || u.role === 'supervisor' || u.role === 'admin');
@@ -215,6 +218,7 @@ async function seedAdmin(payload = {}) {
 // ── 字典：按 type 查询；可选 upsert ───────────────────────────────────
 async function dict(payload) {
   const { type, data } = payload;
+  await db.ensureCollection('dicts');
   if (type) {
     const res = await db.listBy('dicts', { type }, 100);
     return ok(res.data || []);
@@ -229,6 +233,7 @@ async function dict(payload) {
 // ── 检查表模板管理：list / add ───────────────────────────────────────
 async function checkTemplate(payload) {
   const { op = 'list', data } = payload;
+  await db.ensureCollection('check_templates');
   if (op === 'list') {
     const res = await db.listBy('check_templates', {}, 50);
     return ok(res.data || []);
@@ -243,6 +248,7 @@ async function checkTemplate(payload) {
 // ── 操作日志上报 ──────────────────────────────────────────────────────
 async function log(payload) {
   const openid = getOpenid();
+  await db.ensureCollection('operation_logs');
   const a = await db.add('operation_logs', { operator: openid, ...payload, ts: now() });
   return ok({ _id: a._id });
 }
@@ -250,6 +256,7 @@ async function log(payload) {
 // M13.3 操作日志查询（按时间倒序）
 async function listLog(payload = {}) {
   const { limit = 50, type = '' } = payload;
+  await db.ensureCollection('operation_logs');
   const where = {};
   if (type) where.type = type;
   const res = await db.collection('operation_logs').where(where).orderBy('ts', 'desc').limit(limit).get();
