@@ -1,6 +1,6 @@
 // pkg-barcode/pages/gen/gen.js —— M14.1 真实二维码图形生成 + 标签输出
 const api = require('../../../utils/api');
-const qrcode = require('../../../utils/vendor/qrcode.js');
+const qrcode = require('../../utils/qrcode.js');
 
 Page({
   data: {
