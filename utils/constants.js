@@ -18,6 +18,7 @@ const ROLES = {
   SUPERVISOR: 'supervisor',           // 安监部管理人员
   WORKER: 'worker',                   // 普通作业人员
   LEASE_ADMIN: 'lease_admin',         // 租赁机具管理员
+  ADMIN: 'admin',                     // 小程序管理员（拥有小程序全部数据管理权限）
 };
 
 const TOOL_CATEGORIES = [

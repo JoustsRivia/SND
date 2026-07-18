@@ -1,4 +1,4 @@
-// cloudfunctions/_tpl/helpers/db.js  （模板，与各函数 helpers/ 一致）
+// cloudfunctions/tpl/helpers/db.js  （模板，与各函数 helpers/ 一致）
 // ★ 隔离层：仅此文件可调用 cloud.database() 等 wx-server-sdk 数据能力。
 // 迁移到自有服务器时，只重写本文件（改为 MySQL/MongoDB 客户端），业务 index.js 零改动。
 const cloud = require('wx-server-sdk');
@@ -35,6 +35,7 @@ const regExp = (regexp, options = 'i') => db.RegExp({ regexp, options });
 const getById = (name, id) => collection(name).doc(id).get();
 const add = (name, data) => collection(name).add({ data });
 const update = (name, id, data) => collection(name).doc(id).update({ data });
+const remove = (name, id) => collection(name).doc(id).remove();
 const listBy = (name, filter = {}, size = 50) => collection(name).where(filter).limit(size).get();
 
 module.exports = {
@@ -43,5 +44,5 @@ module.exports = {
   findTool, addTool, updateTool, listTools, countTools,
   addBorrow, listBorrow,
   addScrap, updateScrap, listScrap,
-  getById, add, update, listBy,
+  getById, add, update, remove, listBy,
 };

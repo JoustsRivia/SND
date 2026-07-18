@@ -5,8 +5,9 @@ const auth = require('../../utils/auth');
 const ROLE_TEXT = {
   lead: '专班负责人', project_lead: '项目部负责人', safety_officer: '专职安全员',
   group_lead: '班组长', supervisor: '安监管理', worker: '作业人员', lease_admin: '租赁管理员',
+  admin: '小程序管理员',
 };
-const ADMIN_ROLES = ['lead', 'supervisor'];
+const ADMIN_ROLES = ['lead', 'supervisor', 'admin'];
 
 Page({
   data: { profile: null, roleText: '', avatarText: '我', orgName: '', stats: [], groups: [] },

@@ -53,8 +53,8 @@ async function signin(data) {
 
 function hasRole(role) {
   if (!_profile) return false;
-  // 专班负责人拥有全部权限；其余按 role 精确匹配
-  if (_profile.role === ROLES.LEAD) return true;
+  // 专班负责人、小程序管理员拥有全部权限；其余按 role 精确匹配
+  if (_profile.role === ROLES.LEAD || _profile.role === ROLES.ADMIN) return true;
   return _profile.role === role;
 }
 

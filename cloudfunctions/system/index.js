@@ -9,21 +9,27 @@ const now = () => new Date();
 const crypto = require('crypto');
 function hashPwd(p) { return p ? crypto.createHash('sha1').update('tms_' + p).digest('hex') : ''; }
 
-// ── 默认组织架构（单位→项目部→班组）────────────────────────────────────
+// ── 默认组织架构（示例）─────────────────────────────────────────────────
 // 组织节点字段：{ _id, name, parentId, level, kind }
-//   kind: 'unit'(所属单位/总分包企业) | 'project'(项目部) | 'team'(机构/班组)
+//   kind: 'unit'(所属单位) | 'project'(项目部/工程部) | 'team'(机构/班组)
 // 首次 orgTree 为空时自愈播种；也支持管理员在「恢复默认组织架构」中重新播种。
+// 示例：单位[平台, 安装公司, 广安公司, 分包1, 分包2]；
+//   安装公司→工程部、调试班(直属)；分包1→工程部→木工班、电工班。
 async function seedOrgs() {
   const t0 = now();
-  const u1 = await db.addOrg({ name: '总包企业', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
-  const u2 = await db.addOrg({ name: '分包企业', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
-  const p1 = await db.addOrg({ name: '第一项目部', parentId: u1._id, level: 1, kind: 'project', createdAt: t0 });
-  const p2 = await db.addOrg({ name: '第二项目部', parentId: u1._id, level: 1, kind: 'project', createdAt: t0 });
-  const p3 = await db.addOrg({ name: '第三项目部', parentId: u2._id, level: 1, kind: 'project', createdAt: t0 });
-  await db.addOrg({ name: '一班', parentId: p1._id, level: 2, kind: 'team', createdAt: t0 });
-  await db.addOrg({ name: '二班', parentId: p1._id, level: 2, kind: 'team', createdAt: t0 });
-  await db.addOrg({ name: '三班', parentId: p2._id, level: 2, kind: 'team', createdAt: t0 });
-  await db.addOrg({ name: '四班', parentId: p3._id, level: 2, kind: 'team', createdAt: t0 });
+  // 单位（level 0）
+  const uPlatform = await db.addOrg({ name: '平台', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
+  const uAz = await db.addOrg({ name: '安装公司', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
+  const uGa = await db.addOrg({ name: '广安公司', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
+  const uSub1 = await db.addOrg({ name: '分包1', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
+  const uSub2 = await db.addOrg({ name: '分包2', parentId: '', level: 0, kind: 'unit', createdAt: t0 });
+  // 安装公司 下级
+  await db.addOrg({ name: '工程部', parentId: uAz._id, level: 1, kind: 'project', createdAt: t0 });
+  await db.addOrg({ name: '调试班', parentId: uAz._id, level: 1, kind: 'team', createdAt: t0 }); // 安装公司直属调试班
+  // 分包1 下级
+  const p1 = await db.addOrg({ name: '工程部', parentId: uSub1._id, level: 1, kind: 'project', createdAt: t0 });
+  await db.addOrg({ name: '木工班', parentId: p1._id, level: 2, kind: 'team', createdAt: t0 });
+  await db.addOrg({ name: '电工班', parentId: p1._id, level: 2, kind: 'team', createdAt: t0 });
 }
 
 async function orgTree() {
@@ -36,12 +42,13 @@ async function orgTree() {
 }
 
 // ── 组织架构管理（op: add | update | delete | seed）───────────────────
-// 服务端角色鉴权（S1）：仅专班负责人/安监部可管理组织，且禁止自建/分配越权角色
-const ROLE_WHITE = ['worker', 'group_lead', 'safety_officer', 'lease_admin', 'project_lead'];
+// 服务端角色鉴权（S1）：小程序管理员 / 专班负责人 / 安监部可管理用户与组织；
+// 小程序管理员(admin)为最高数据管理权限，其余越权角色禁止在管理页分配。
+const ROLE_WHITE = ['worker', 'group_lead', 'safety_officer', 'lease_admin', 'project_lead', 'lead', 'supervisor'];
 async function requireAdmin() {
   const u = await db.getCurrentUser(getOpenid());
   if (!u || u.status === 'disabled') return { err: fail('账号不可用', 403) };
-  if (u.role !== 'lead' && u.role !== 'supervisor') return { err: fail('仅专班负责人/安监部可管理用户', 403) };
+  if (u.role !== 'lead' && u.role !== 'supervisor' && u.role !== 'admin') return { err: fail('仅小程序管理员/专班负责人/安监部可管理', 403) };
   return { u };
 }
 
@@ -173,8 +180,8 @@ async function userManage(payload) {
 }
 
 // ── 种子管理员账号（仅需首次，无需已登录）─────────────────────────────
-// 创建/绑定当前微信身份为「安监部管理人员(supervisor)」，账号 Jousts / qwer1234。
-// 幂等保护：若已存在 lead/supervisor，则拒绝重复播种，防止越权覆盖。
+// 创建/绑定当前微信身份为「小程序管理员(admin)」，账号 Jousts / qwer1234，
+// 拥有小程序全部数据管理权限。幂等保护：若已存在 admin/lead/supervisor，则拒绝重复播种。
 const SEED_USERNAME = 'Jousts';
 const SEED_PASSWORD = 'qwer1234';
 async function seedAdmin(payload = {}) {
@@ -183,14 +190,14 @@ async function seedAdmin(payload = {}) {
   const password = payload.password || SEED_PASSWORD;
   // 已存在任一管理员则拒绝
   const admins = await db.listBy('users', {}, 200);
-  const hasAdmin = admins.data && admins.data.some((u) => u.role === 'lead' || u.role === 'supervisor');
+  const hasAdmin = admins.data && admins.data.some((u) => u.role === 'lead' || u.role === 'supervisor' || u.role === 'admin');
   if (hasAdmin) return fail('管理员账号已存在，请直接使用账号登录', 409);
   const me = await db.getCurrentUser(openid);
   const doc = {
     username,
     nickname: username,
     password: hashPwd(password),
-    role: 'supervisor',
+    role: 'admin',
     unitId: '',
     orgId: '',
     bound: true,
@@ -202,7 +209,7 @@ async function seedAdmin(payload = {}) {
   } else {
     await db.add('users', { ...doc, openid, createdAt: now() });
   }
-  return ok({ username, role: 'supervisor' });
+  return ok({ username, role: 'admin' });
 }
 
 // ── 字典：按 type 查询；可选 upsert ───────────────────────────────────

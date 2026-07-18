@@ -5,13 +5,17 @@ const api = require('../../utils/api');
 const { ROLES } = require('../../utils/constants');
 
 // 仅暴露「可自绑定」角色（与 cloudfunctions/auth register 服务端白名单一致）。
-// 专班负责人 / 安监部管理人员权限极高，须由系统管理员分配。
+// 普通业务角色 + 专班负责人/项目部负责人/安监部管理人员 均支持自助注册；
+// 「小程序管理员(admin)」权限最高，不在此列表，须由系统初始化/控制台分配。
 // desc 说明数据范围（问题4 RBAC 的前端呈现）：绑到「班组」只看本班，绑到「项目部」看整个项目部。
 const ROLES_BINDABLE = [
   { value: ROLES.WORKER, name: '普通作业人员', desc: '仅可查看本班组工器具' },
   { value: ROLES.GROUP_LEAD, name: '班组长/班组安全员', desc: '仅可查看本班组工器具' },
   { value: ROLES.SAFETY_OFFICER, name: '项目部专职安全员', desc: '可管辖整个项目部台账' },
   { value: ROLES.LEASE_ADMIN, name: '租赁机具管理员', desc: '管理租赁机具台账' },
+  { value: ROLES.LEAD, name: '专班负责人', desc: '全局台账与全部管理权限' },
+  { value: ROLES.PROJECT_LEAD, name: '项目部负责人', desc: '可管辖整个项目部台账' },
+  { value: ROLES.SUPERVISOR, name: '安监部管理人员', desc: '安监督查与系统管理' },
 ];
 
 Page({
@@ -134,11 +138,11 @@ Page({
 
   onForgot() { wx.showToast({ title: '请联系系统管理员重置', icon: 'none' }); },
 
-  // 初始化管理员账号（仅首次）：把当前微信身份设为安监部管理员 Jousts / qwer1234
+  // 初始化管理员账号（仅首次）：把当前微信身份设为小程序管理员(admin) Jousts / qwer1234
   async onSeedAdmin() {
     const ok = await new Promise((resolve) => wx.showModal({
       title: '初始化管理员账号',
-      content: '将把当前微信身份设为安监部管理员，账号 Jousts / 密码 qwer1234。仅首次可用，已存在管理员时将跳过。',
+      content: '将把当前微信身份设为小程序管理员，账号 Jousts / 密码 qwer1234。仅首次可用，已存在管理员时将跳过。',
       success: (r) => resolve(r.confirm),
     }));
     if (!ok) return;

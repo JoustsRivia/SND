@@ -20,6 +20,7 @@ const KIND_OPTIONS = [
 const ROLE_TEXT = {
   lead: '专班负责人', project_lead: '项目部负责人', safety_officer: '专职安全员',
   group_lead: '班组长', supervisor: '安监管理', worker: '作业人员', lease_admin: '租赁管理员',
+  admin: '小程序管理员',
 };
 
 Page({
@@ -43,11 +44,11 @@ Page({
   },
 
   onShow() {
-    // 权限守卫：仅专班负责人 / 安监部可进入
+    // 权限守卫：专班负责人 / 安监部 / 小程序管理员 可进入
     const p = auth.getProfile();
-    if (!p || (p.role !== ROLES.LEAD && p.role !== ROLES.SUPERVISOR)) {
+    if (!p || (p.role !== ROLES.LEAD && p.role !== ROLES.SUPERVISOR && p.role !== ROLES.ADMIN)) {
       wx.showModal({
-        title: '无权限', content: '仅专班负责人 / 安监部管理人员可访问系统管理。',
+        title: '无权限', content: '仅专班负责人 / 安监部管理人员 / 小程序管理员可访问系统管理。',
         showCancel: false, success: () => wx.navigateBack(),
       });
       return;

@@ -5,10 +5,10 @@ const { getOpenid } = require('./helpers/user');
 const { findUser, addUser, updateUser, update, listUsers, remove } = require('./helpers/db');
 
 // F2 安全修复：服务端角色白名单，禁止客户端伪造 role 提权。
-// 仅「操作类」角色允许在首次登录自绑定；审批 / 决策 / 督查类角色权限极高，
-// 必须由系统管理员在 pkg-system 后台分配（与 updateProfile 排除 role/orgId 的策略一致）。
+// 普通业务角色 + 专班负责人/项目部负责人/安监部管理人员 均允许在注册时自绑定；
+// 「小程序管理员(admin)」权限极高，不在此白名单，须由系统初始化/控制台分配，避免越权自建。
 // 与 utils/constants.js 的 ROLES 保持同源；此处硬编码以建立服务端权威边界，避免跨部署依赖。
-const SELF_BINDABLE_ROLES = ['worker', 'group_lead', 'safety_officer', 'lease_admin'];
+const SELF_BINDABLE_ROLES = ['worker', 'group_lead', 'safety_officer', 'lease_admin', 'lead', 'project_lead', 'supervisor'];
 
 // 统一出口
 const ok = (data) => ({ code: 0, data });
