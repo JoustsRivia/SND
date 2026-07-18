@@ -11,20 +11,20 @@ const CERT_TO_CATEGORY = {
   welder: 'motor', hoist: 'lifting', height: 'height', electric: 'motor', pressure: 'lease', other: 'all',
 };
 
-// 服务端角色鉴权：管理员/专班/安监可查看全部证书
+// 服务端角色鉴权：仅小程序管理员(admin)可查看/管理全部证书
 async function requireAdmin() {
   const u = await db.getCurrentUser(getOpenid());
   if (!u) return { err: fail('未登录', 401) };
-  if (!['lead', 'supervisor', 'admin'].includes(u.role)) return { err: fail('无权限', 403) };
+  if (u.role !== 'admin') return { err: fail('无权限', 403) };
   return { u };
 }
 
-// 列表：管理员看全部，普通用户只看自己
+// 列表：管理员(admin)看全部，普通用户只看自己
 async function list(payload = {}) {
   const { openid, type, status, orgId } = payload;
   const me = await db.getCurrentUser(getOpenid());
   const where = {};
-  const isAdmin = me && ['lead', 'supervisor', 'admin'].includes(me.role);
+  const isAdmin = me && me.role === 'admin';
   if (!isAdmin) where.openid = getOpenid();
   else {
     if (openid) where.openid = openid;
@@ -69,7 +69,7 @@ async function remove(payload = {}) {
   const r = await db.getById('certificates', id);
   if (!r.data) return fail('证书不存在', 404);
   // 仅本人或管理员可删
-  if (r.data.openid !== getOpenid() && !(me && ['lead', 'supervisor', 'admin'].includes(me.role))) {
+  if (r.data.openid !== getOpenid() && !(me && me.role === 'admin')) {
     return fail('无权限删除', 403);
   }
   await db.update('certificates', id, { status: 'deleted', deletedAt: now() });

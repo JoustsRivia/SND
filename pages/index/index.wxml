@@ -26,16 +26,20 @@
 
 <stats-card items="{{stats}}" columns="4" />
 
-<!-- 模块九宫格（按角色权限动态展示） -->
+<!-- 模块九宫格（按角色权限 + 分类动态展示） -->
 <view class="section-head">
   <view class="section-title">功能模块</view>
   <view class="section-sub">{{roleText || '成员'}}可见</view>
 </view>
-<view class="module-grid">
-  <view wx:for="{{modules}}" wx:key="key" class="module-cell" hover-class="cell-hover"
-        data-url="{{item.url}}" data-tab="{{item.tab ? 1 : 0}}" bindtap="onModule">
-    <view class="module-icon">{{item.icon}}</view>
-    <view class="module-label">{{item.label}}</view>
+
+<view wx:for="{{groups}}" wx:key="key" class="mod-group">
+  <view class="mod-group-title">{{item.name}}</view>
+  <view class="module-grid">
+    <view wx:for="{{item.items}}" wx:for-item="m" wx:key="key" class="module-cell" hover-class="cell-hover"
+          data-url="{{m.url}}" data-tab="{{m.tab ? 1 : 0}}" bindtap="onModule">
+      <view class="module-icon">{{m.icon}}</view>
+      <view class="module-label">{{m.label}}</view>
+    </view>
   </view>
 </view>
 

@@ -16,7 +16,7 @@ Page({
   async load() {
     this.setData({ loading: true });
     const p = auth.getProfile();
-    const isAdmin = p && ['lead', 'supervisor', 'admin'].includes(p.role);
+    const isAdmin = p && p.role === 'admin';
     const r = await api.certList(isAdmin ? {} : {}).catch(() => null);
     const list = (r || []).map((c) => ({
       ...c,

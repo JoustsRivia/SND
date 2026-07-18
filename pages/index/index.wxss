@@ -63,10 +63,14 @@
 .todo-arrow { color: var(--c-text-weak); font-size: 40rpx; margin-left: 12rpx; }
 .loading { text-align: center; }
 
-/* 模块九宫格（按角色权限动态展示） */
+/* 模块九宫格（按角色权限 + 分类动态展示） */
+.mod-group { margin: var(--sp-3); }
+.mod-group-title {
+  font-size: 26rpx; font-weight: 600; color: var(--c-text);
+  padding: 0 0 12rpx var(--sp-1);
+}
 .module-grid {
   display: flex; flex-wrap: wrap;
-  margin: 0 var(--sp-3);
   background: var(--c-surface);
   border-radius: var(--r-lg);
   box-shadow: var(--sh-card);

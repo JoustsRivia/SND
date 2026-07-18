@@ -43,13 +43,16 @@ async function orgTree() {
 }
 
 // ── 组织架构管理（op: add | update | delete | seed）───────────────────
-// 服务端角色鉴权（S1）：小程序管理员 / 专班负责人 / 安监部可管理用户与组织；
-// 小程序管理员(admin)为最高数据管理权限，其余越权角色禁止在管理页分配。
-const ROLE_WHITE = ['worker', 'group_lead', 'safety_officer', 'lease_admin', 'project_lead', 'lead', 'supervisor'];
+// 服务端角色鉴权（S1）：**仅小程序管理员(admin)可管理用户与组织**。
+// admin 为最高数据管理权限；专班负责人(lead)/项目部负责人(project_lead)/安监部(supervisor)
+// 属业务管理角色，不再具备系统管理员权限，禁止进入系统管理后台。
+// 可分配角色：业务角色 + 小程序管理员(admin)。admin 由现有管理员在后台指派，
+// 普通用户注册自绑定白名单（cloudfunctions/auth SELF_BINDABLE_ROLES）不包含 admin，杜绝越权自建。
+const ROLE_WHITE = ['worker', 'group_lead', 'safety_officer', 'lease_admin', 'project_lead', 'lead', 'supervisor', 'admin'];
 async function requireAdmin() {
   const u = await db.getCurrentUser(getOpenid());
   if (!u || u.status === 'disabled') return { err: fail('账号不可用', 403) };
-  if (u.role !== 'lead' && u.role !== 'supervisor' && u.role !== 'admin') return { err: fail('仅小程序管理员/专班负责人/安监部可管理', 403) };
+  if (u.role !== 'admin') return { err: fail('仅小程序管理员(admin)可管理组织与用户', 403) };
   return { u };
 }
 
@@ -183,7 +186,7 @@ async function userManage(payload) {
 
 // ── 种子管理员账号（仅需首次，无需已登录）─────────────────────────────
 // 创建/绑定当前微信身份为「小程序管理员(admin)」，账号 Jousts / qwer1234，
-// 拥有小程序全部数据管理权限。幂等保护：若已存在 admin/lead/supervisor，则拒绝重复播种。
+// 拥有小程序全部数据管理权限（最高权限）。幂等保护：若已存在 admin，则拒绝重复播种。
 const SEED_USERNAME = 'Jousts';
 const SEED_PASSWORD = 'qwer1234';
 async function seedAdmin(payload = {}) {
@@ -191,9 +194,9 @@ async function seedAdmin(payload = {}) {
   const username = (payload.username || SEED_USERNAME).trim();
   const password = payload.password || SEED_PASSWORD;
   await db.ensureCollection('users');
-  // 已存在任一管理员则拒绝
+  // 已存在任一管理员(admin)则拒绝
   const admins = await db.listBy('users', {}, 200);
-  const hasAdmin = admins.data && admins.data.some((u) => u.role === 'lead' || u.role === 'supervisor' || u.role === 'admin');
+  const hasAdmin = admins.data && admins.data.some((u) => u.role === 'admin');
   if (hasAdmin) return fail('管理员账号已存在，请直接使用账号登录', 409);
   const me = await db.getCurrentUser(openid);
   const doc = {

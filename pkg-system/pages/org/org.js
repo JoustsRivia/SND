@@ -11,6 +11,7 @@ const ROLE_OPTIONS = [
   { value: ROLES.SAFETY_OFFICER, name: '项目部专职安全员' },
   { value: ROLES.LEASE_ADMIN, name: '租赁机具管理员' },
   { value: ROLES.PROJECT_LEAD, name: '项目部负责人' },
+  { value: ROLES.ADMIN, name: '小程序管理员（最高权限）' },
 ];
 const KIND_OPTIONS = [
   { value: 'unit', name: '所属单位（总/分包企业）' },
@@ -44,11 +45,11 @@ Page({
   },
 
   onShow() {
-    // 权限守卫：专班负责人 / 安监部 / 小程序管理员 可进入
+    // 权限守卫：仅小程序管理员(admin)可进入系统管理后台（组织与用户管理）
     const p = auth.getProfile();
-    if (!p || (p.role !== ROLES.LEAD && p.role !== ROLES.SUPERVISOR && p.role !== ROLES.ADMIN)) {
+    if (!p || p.role !== ROLES.ADMIN) {
       wx.showModal({
-        title: '无权限', content: '仅专班负责人 / 安监部管理人员 / 小程序管理员可访问系统管理。',
+        title: '无权限', content: '仅小程序管理员(admin)可访问系统管理（组织/用户/字典/日志）。',
         showCancel: false, success: () => wx.navigateBack(),
       });
       return;

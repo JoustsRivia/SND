@@ -1,7 +1,7 @@
 // pages/index/index.js —— 工作台（角色化九宫格 + 待办）
 const api = require('../../utils/api');
 const auth = require('../../utils/auth');
-const { visibleModules } = require('../../utils/modules');
+const { moduleGroups } = require('../../utils/modules');
 
 const ROLE_TEXT = {
   lead: '专班负责人', project_lead: '项目部负责人', safety_officer: '专职安全员',
@@ -35,6 +35,7 @@ Page({
     stats: [],
     todos: [],
     modules: [],
+    groups: [],
     loading: true,
   },
 
@@ -50,13 +51,17 @@ Page({
   onPullDownRefresh() { this.refresh().then(() => wx.stopPullDownRefresh()); },
 
   applyProfile(p) {
-    if (!p) { this.setData({ profile: null, roleText: '', avatarText: '工', modules: [] }); return; }
+    if (!p) {
+      this.setData({ profile: null, roleText: '', avatarText: '工', modules: [], groups: [] });
+      return;
+    }
     const name = p.nickName || p.username || '';
     this.setData({
       profile: p,
       roleText: ROLE_TEXT[p.role] || '成员',
       avatarText: (name ? name[0] : '工').toUpperCase(),
-      modules: visibleModules(p.role),
+      modules: [],           // 兼容旧字段（保留，避免其它引用报错）
+      groups: moduleGroups(p.role),
     });
   },
 
@@ -83,10 +88,10 @@ Page({
   },
 
   onModule(e) {
-    const m = e.currentTarget.dataset.m;
-    if (!m) return;
-    if (m.tab) wx.switchTab({ url: m.url });
-    else wx.navigateTo({ url: m.url });
+    const { url, tab } = e.currentTarget.dataset;
+    if (!url) return;
+    if (tab) wx.switchTab({ url });
+    else wx.navigateTo({ url });
   },
 
   goLedger() { wx.switchTab({ url: '/pages/ledger/ledger' }); },
