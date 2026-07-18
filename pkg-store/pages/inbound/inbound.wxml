@@ -5,7 +5,7 @@
     <view class="form-row">
       <text class="form-label">器具</text>
       <picker range="{{tools}}" range-key="name" value="{{idx}}" bindchange="onPick">
-        <view class="form-value">{{tools[idx].name || '请选择'}} ›</view>
+        <view class="form-value">{{tools.length ? (tools[idx] ? tools[idx].name : '请选择') : '暂无可用器具'}} ›</view>
       </picker>
     </view>
     <view class="form-row">

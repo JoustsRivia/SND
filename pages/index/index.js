@@ -46,7 +46,10 @@ Page({
     this.applyProfile(p);
   },
 
-  onLoad() { this.refresh(); },
+  async onLoad() {
+    if (!(await auth.requireServerLogin())) return;
+    this.refresh();
+  },
 
   onPullDownRefresh() { this.refresh().then(() => wx.stopPullDownRefresh()); },
 

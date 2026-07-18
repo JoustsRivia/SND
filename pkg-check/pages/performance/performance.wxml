@@ -12,7 +12,7 @@
     <view wx:if="{{summary}}" class="summary">
       <view class="s-item"><text class="n">{{summary.personCount}}</text><text class="l">参评人数</text></view>
       <view class="s-item"><text class="n">{{summary.avg}}</text><text class="l">平均分</text></view>
-      <view class="s-item"><text class="n">{{summary.top.name || '-'}}</text><text class="l">第一名</text></view>
+      <view class="s-item"><text class="n">{{summary && summary.top ? summary.top.name : '-'}}</text><text class="l">第一名</text></view>
     </view>
     <view wx:if="{{rank.length===0}}" class="empty">本月暂无评分</view>
     <view wx:for="{{rank}}" wx:key="personId" class="r-card">

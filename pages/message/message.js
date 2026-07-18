@@ -33,7 +33,10 @@ Page({
     loading: true,
   },
 
-  onLoad() { this.load(); },
+  async onLoad() {
+    if (!(await auth.requireServerLogin())) return;
+    this.load();
+  },
   onPullDownRefresh() { this.load().then(() => wx.stopPullDownRefresh()); },
   onShow() {
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return; }

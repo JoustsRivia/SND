@@ -29,6 +29,7 @@
       <view class="row"><text class="label">出租单位</text><input class="input" placeholder="如：XX机械租赁公司" value="{{form.leaseUnit}}" data-k="leaseUnit" bindinput="bind" /></view>
       <view class="row"><text class="label">合格证号</text><input class="input" placeholder="检测合格证编号" value="{{form.certNo}}" data-k="certNo" bindinput="bind" /></view>
       <view class="row"><text class="label">现场操作人</text><input class="input" placeholder="如：李工" value="{{form.operator}}" data-k="operator" bindinput="bind" /></view>
+      <view class="row"><text class="label">操作证号</text><input class="input" placeholder="持证编号" value="{{form.operatorCert}}" data-k="operatorCert" bindinput="bind" /></view>
     </block>
   </view>
 

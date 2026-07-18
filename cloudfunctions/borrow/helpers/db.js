@@ -1,4 +1,4 @@
-// cloudfunctions/tpl/helpers/db.js  （模板，与各函数 helpers/ 一致）
+// cloudfunctions/borrow/helpers/db.js （隔离层：仅此文件可调用 cloud.database() 等 wx-server-sdk 数据能力）
 // ★ 隔离层：仅此文件可调用 cloud.database() 等 wx-server-sdk 数据能力。
 // 迁移到自有服务器时，只重写本文件（改为 MySQL/MongoDB 客户端），业务 index.js 零改动。
 const cloud = require('wx-server-sdk');
@@ -25,6 +25,9 @@ const countTools = (filter = {}) => collection('tools').where(filter).count();
 const addBorrow = (data) => collection('borrow_records').add({ data });
 const listBorrow = (filter = {}, size = 50) => collection('borrow_records').where(filter).limit(size).orderBy('ts', 'desc').get();
 
+// ── repair_records（归还损坏时自动生成报修单，对接 M7 维修流程） ──
+const addRepair = (data) => collection('repair_records').add({ data });
+
 // ── scrap_records ──
 const addScrap = (data) => collection('scrap_records').add({ data });
 const updateScrap = (id, data) => collection('scrap_records').doc(id).update({ data });
@@ -46,7 +49,7 @@ module.exports = {
   collection, _, regExp,
   findUser, addUser, updateUser, listUsers,
   findTool, addTool, updateTool, listTools, countTools,
-  addBorrow, listBorrow,
+  addBorrow, listBorrow, addRepair,
   addScrap, updateScrap, listScrap,
   getById, add, update, listBy,
   getCurrentUser,

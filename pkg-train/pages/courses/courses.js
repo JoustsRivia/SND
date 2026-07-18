@@ -5,7 +5,13 @@ const network = require('../../../utils/network');
 Page({
   data: { list: [], loading: true },
 
-  async onLoad() { await this.load(); },
+  async onLoad() {
+    // 登录守卫：未登录跳登录页
+    let profile = null;
+    try { profile = await api.getMyProfile(); } catch (e) { profile = null; }
+    if (!profile || !profile.bound) { wx.reLaunch({ url: '/pages/login/login' }); return; }
+    await this.load();
+  },
   async onPullDownRefresh() { await this.load(); wx.stopPullDownRefresh(); },
 
   async load() {

@@ -20,6 +20,11 @@ Page({
     ],
   },
 
+  async onLoad() {
+    // 进入扫码中枢前先服务端校验登录态
+    if (!(await auth.requireServerLogin())) return;
+  },
+
   onShow() {
     // 问题1：未登录拦截
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return; }

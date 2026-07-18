@@ -73,7 +73,8 @@ const verifyTestTag = (code) => invoke(FN.test, 'verifyTag', { code });
 
 // ── 领用归还 M5 ──────────────────────────────────────────────────────
 const borrowTool = (id) => invoke(FN.borrow, 'borrow', { id });
-const returnTool = (id) => invoke(FN.borrow, 'return', { id });
+// 归还需回传外观状态（normal/damaged），外观损坏触发报修（M5.2.1~M5.2.3）
+const returnTool = (id, data = {}) => invoke(FN.borrow, 'return', { id, ...data });
 const getBorrowRecords = (params) => invoke(FN.borrow, 'records', params);
 
 // ── 维保 M7 ──────────────────────────────────────────────────────────
@@ -96,7 +97,8 @@ const recordScrapDisposal = (data) => invoke(FN.scrap, 'disposal', data);
 
 // ── 采购验收 M2 ───────────────────────────────────────────────────────
 const createPurchase = (data) => invoke(FN.purchase, 'create', data);
-const approvePurchase = (id) => invoke(FN.purchase, 'approve', { id });
+// 审批需透传 pass：pass=false 表示驳回，云函数据此置 rejected（修复「驳回恒变通过」）
+const approvePurchase = (id, pass = true) => invoke(FN.purchase, 'approve', { id, pass });
 const createAcceptance = (data) => invoke(FN.purchase, 'accept', data);
 const getPurchaseList = (params) => invoke(FN.purchase, 'list', params);
 
@@ -151,6 +153,10 @@ const manageUser = (data) => invoke(FN.system, 'user', data);
 const listUsers = () => invoke(FN.system, 'user', { op: 'list' });
 const seedAdmin = (data = {}) => invoke(FN.system, 'seedAdmin', data);
 const getDict = (type) => invoke(FN.system, 'dict', { type });
+// 字典增删改（M13.2）：服务端 requireAdmin 鉴权，按 type+key 写入 dicts 集合
+const createDict = (data) => invoke(FN.system, 'dict', { op: 'create', data });
+const updateDict = (data) => invoke(FN.system, 'dict', { op: 'update', data });
+const removeDict = (id) => invoke(FN.system, 'dict', { op: 'remove', data: { _id: id } });
 const manageCheckTemplate = (data) => invoke(FN.system, 'checkTemplate', data);
 
 // ── 条码文件 M14 ──────────────────────────────────────────────────────
@@ -231,7 +237,7 @@ module.exports = {
   // 统计
   getDashboard, getProjectDashboard, getSixStandard, getMyStats, getTrend, exportReport,
   // 系统
-  getOrgTree, manageOrg, manageUser, listUsers, seedAdmin, getDict, manageCheckTemplate,
+  getOrgTree, manageOrg, manageUser, listUsers, seedAdmin, getDict, createDict, updateDict, removeDict, manageCheckTemplate,
   // 条码
   generateBarcode, getBarcodeFile, batchInbound, batchSpotCheck, batchGenBarcode, genLabel,
   // 持证

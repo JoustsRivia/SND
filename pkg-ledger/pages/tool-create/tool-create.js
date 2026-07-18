@@ -13,7 +13,7 @@ Page({
     form: {
       name: '', spec: '', factoryNo: '', purchaseDate: '',
       testPeriod: 6, lastTestDate: '', expireAt: '', store: '', keeper: '', source: 'self',
-      leaseUnit: '', certNo: '', operator: '', // M1.3.7 租赁字段
+      leaseUnit: '', certNo: '', operator: '', operatorCert: '', // M1.3.7 租赁字段
       attachments: [], // M1.3.5 附件（合同/合格证/试验报告）
     },
     submitting: false,
@@ -39,7 +39,7 @@ Page({
         purchaseDate: t.purchaseDate || '', testPeriod: t.testPeriod || 6,
         lastTestDate: t.lastTestDate || '', expireAt: t.expireAt || '',
         store: t.store || '', keeper: t.keeper || '', source: t.source || 'self',
-        leaseUnit: t.leaseUnit || '', certNo: t.certNo || '', operator: t.operator || '',
+        leaseUnit: t.leaseUnit || '', certNo: t.certNo || '', operator: t.operator || '', operatorCert: t.operatorCert || '',
         attachments: t.attachments || [],
       },
     });

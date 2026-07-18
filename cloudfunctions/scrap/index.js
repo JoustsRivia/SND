@@ -85,14 +85,20 @@ async function approve(payload) {
   const g = await requireApprover();
   if (g.err) return g.err;
   const { scrapId, approve: pass } = payload;
+  const rec = await getScrap(scrapId);
   if (!pass) {
-    const rec = await getScrap(scrapId);
-    if (rec) await updateTool(rec.toolId, { status: 'qualified', updatedAt: new Date() });
-    await updateScrap(scrapId, { status: 'rejected', updatedAt: new Date() });
+    // 先落报废记录（数据真相源），再回写器具状态；即使回写失败也不留「记录待审、器具已恢复」的脏数据
+    if (rec) {
+      await updateScrap(scrapId, { status: 'rejected', updatedAt: new Date() });
+      await updateTool(rec.toolId, { status: 'qualified', updatedAt: new Date() });
+    } else {
+      console.error('[scrap] approve reject: 报废记录不存在', scrapId);
+      await updateScrap(scrapId, { status: 'rejected', updatedAt: new Date() });
+    }
     return ok({ status: 'rejected' });
   }
-  const rec = await getScrap(scrapId);
   if (!rec) return fail('报废记录不存在', 404);
+  // 先更新报废记录为 approved，再同步器具为 scrapped，避免部分失败导致状态不一致
   await updateScrap(scrapId, { status: 'approved', updatedAt: new Date() });
   await updateTool(rec.toolId, { status: 'scrapped', updatedAt: new Date() });
   return ok({ status: 'approved' });
@@ -100,6 +106,8 @@ async function approve(payload) {
 
 // 报废处置（M8.2 回收/销毁/台账同步）+ M8.2.4 外流异动告警
 async function disposal(payload) {
+  const g = await requireApprover();
+  if (g.err) return g.err;
   const { scrapId, method, destroyedAt, handler, photos } = payload;
   const rec = await getScrap(scrapId);
   if (!rec) return fail('报废记录不存在', 404);

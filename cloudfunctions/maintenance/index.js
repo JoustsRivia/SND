@@ -5,6 +5,17 @@ const ok = (data) => ({ code: 0, data });
 const fail = (message, code = 1) => ({ code, message });
 const now = () => new Date();
 
+// 服务端角色鉴权（S1）：仅工作专班负责人/项目部负责人/专职安全员/安监部/管理员可审批与变更台账状态
+const ROLE_APPROVE = ['lead', 'project_lead', 'safety_officer', 'supervisor', 'admin'];
+async function requireApprover() {
+  const openid = getOpenid();
+  if (!openid) return { err: fail('未登录', 401) };
+  const u = await db.getCurrentUser(openid);
+  if (!u || u.status === 'disabled') return { err: fail('账号不可用', 403) };
+  if (!ROLE_APPROVE.includes(u.role)) return { err: fail('仅专班负责人/项目部负责人/安全员/管理员可操作', 403) };
+  return { u };
+}
+
 // 保养计划（M7.1）
 async function create(payload) {
   const openid = getOpenid();
@@ -18,12 +29,23 @@ async function report(payload) {
   const openid = getOpenid();
   const doc = { ...payload, status: 'pending', reporter: openid, createdAt: now() };
   const added = await db.add('repair_records', doc);
-  if (payload.toolId) await db.updateTool(payload.toolId, { status: 'maintaining' }).catch(() => {});
+  if (payload.toolId) {
+    try {
+      await db.updateTool(payload.toolId, { status: 'maintaining' });
+    } catch (e) {
+      // 状态同步失败不得静默吞掉：记录日志并向上抛出，由 main 的 catch 转成 fail 返回，
+      // 避免「报修单已建、器具状态未变」的不一致。
+      console.error('[maint] report updateTool failed', e);
+      throw e;
+    }
+  }
   return ok({ _id: added._id, ...doc });
 }
 
 // 审批报修（M7.3）
 async function approve(payload) {
+  const g = await requireApprover();
+  if (g.err) return g.err;
   const { id, approve = true, remark = '' } = payload;
   const r = await db.getById('repair_records', id);
   if (!r.data) return fail('报修单不存在', 404);
@@ -33,6 +55,8 @@ async function approve(payload) {
 
 // 维修登记（M7.4）
 async function record(payload) {
+  const g = await requireApprover();
+  if (g.err) return g.err;
   const { id, repairDetail = '', cost = 0, parts = [] } = payload;
   const r = await db.getById('repair_records', id);
   if (!r.data) return fail('报修单不存在', 404);
@@ -61,6 +85,8 @@ async function listPlan(payload = {}) {
 
 // 保养执行登记（M7.1.2）
 async function execPlan(payload = {}) {
+  const g = await requireApprover();
+  if (g.err) return g.err;
   const { id, detail = '' } = payload;
   const r = await db.getById('maintenance_records', id);
   if (!r.data) return fail('计划不存在', 404);
@@ -70,12 +96,22 @@ async function execPlan(payload = {}) {
 
 // 复检（M7.5）：合格则器具回到 qualified
 async function recheck(payload) {
+  const g = await requireApprover();
+  if (g.err) return g.err;
   const { id, pass = true } = payload;
   const r = await db.getById('repair_records', id);
   if (!r.data) return fail('报修单不存在', 404);
   const status = pass ? 'done' : 'repaired';
   await db.update('repair_records', id, { status, recheckAt: now() });
-  if (pass && r.data.toolId) await db.updateTool(r.data.toolId, { status: 'qualified' }).catch(() => {});
+  // 状态回写失败不得静默吞掉：记录日志并向上抛出，避免台账与器具状态不一致
+  if (pass && r.data.toolId) {
+    try {
+      await db.updateTool(r.data.toolId, { status: 'qualified' });
+    } catch (e) {
+      console.error('[maint] recheck updateTool failed', e);
+      throw e;
+    }
+  }
   return ok({ id, status });
 }
 

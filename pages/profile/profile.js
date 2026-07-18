@@ -12,6 +12,11 @@ const ADMIN_ROLES = ['admin'];
 Page({
   data: { profile: null, roleText: '', avatarText: '我', orgName: '', stats: [], groups: [] },
 
+  async onLoad() {
+    if (!(await auth.requireServerLogin())) return;
+    this.load();
+  },
+
   onShow() {
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return; }
     this.load();

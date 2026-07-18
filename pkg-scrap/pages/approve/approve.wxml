@@ -8,8 +8,8 @@
     </view>
     <text class="muted">申请人：{{item.applicant}} · 原因：{{item.reason || '未填写'}}</text>
     <view class="acts">
-      <button size="mini" type="primary" data-id="{{item._id}}" bindtap="onPass">通过</button>
-      <button size="mini" bindtap="onReject" data-id="{{item._id}}">驳回</button>
+      <button size="mini" type="primary" loading="{{acting}}" disabled="{{acting}}" data-id="{{item._id}}" bindtap="onPass">通过</button>
+      <button size="mini" loading="{{acting}}" disabled="{{acting}}" bindtap="onReject" data-id="{{item._id}}">驳回</button>
     </view>
   </view>
   <view wx:if="{{!loading && list.length === 0}}" class="muted card">暂无待审批报废</view>

@@ -1,6 +1,7 @@
 // cloudfunctions/stats/index.js —— M12 统计分析（纯业务，只引用 helpers）
 const db = require('./helpers/db');
 const { getOpenid } = require('./helpers/user');
+
 const ok = (data) => ({ code: 0, data });
 const fail = (message, code = 1) => ({ code, message });
 const baseFilter = (orgId) => (orgId ? { orgId } : {});
@@ -8,8 +9,39 @@ const baseFilter = (orgId) => (orgId ? { orgId } : {});
 const pad = (n) => String(n).padStart(2, '0');
 const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
+// ── 权限守卫 ────────────────────────────────────────────────────────
+// 登录态：OPENID 必须非空
+function ensureLogin() {
+  const openid = getOpenid();
+  if (!openid) throw new Error('请先登录');
+  return openid;
+}
+// 角色：敏感汇总/导出需具备指定角色（缺省仅要求登录）
+async function ensureRole(roles = []) {
+  const openid = ensureLogin();
+  const user = await db.getUser(openid);
+  if (!user) throw new Error('用户不存在或无权限');
+  if (roles.length && (!user.role || !roles.includes(user.role))) {
+    throw new Error('无权限：需要管理员/负责人角色');
+  }
+  return user;
+}
+// 敏感操作允许的角色
+const SENSITIVE_ROLES = ['admin', 'manager', 'system'];
+
+// ── CSV 安全转义（防公式注入 =/+/-/@，及逗号/引号/换行） ─────────────────
+function csvCell(v) {
+  if (v === null || v === undefined) return '';
+  let s = String(v);
+  if (/^[=+\-@]/.test(s)) s = "'" + s;            // 公式注入前缀单引号
+  if (/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"'; // 含特殊字符整体引号包裹
+  return s;
+}
+const csvRow = (arr) => arr.map(csvCell).join(',');
+
 // 总览驾驶舱 / 项目部看板（同一口径按 orgId 过滤）
 async function dashboard(payload = {}) {
+  ensureLogin();
   const { orgId } = payload;
   const b = baseFilter(orgId);
   const [total, qualified, pending, scrapped, maintaining, missing, expiring, warns] = await Promise.all([
@@ -37,7 +69,7 @@ async function dashboard(payload = {}) {
 
 // 个人工作台统计（我的页）
 async function myStats() {
-  const openid = getOpenid();
+  const openid = ensureLogin();
   const [t, q, pending, warns, checks] = await Promise.all([
     db.countBy('tools', {}),
     db.countBy('tools', { status: 'qualified' }),
@@ -54,6 +86,7 @@ async function myStats() {
 
 // 六化达标（真实口径，不再硬编码 100）
 async function sixStandard() {
+  await ensureRole(SENSITIVE_ROLES);
   const [t, q, c, h, hc, cer, u, tools, scrapped, disposed] = await Promise.all([
     db.countBy('tools', {}),
     db.countBy('tools', { status: 'qualified' }),
@@ -67,10 +100,11 @@ async function sixStandard() {
     db.countBy('scrap_records', { status: 'disposed' }),
   ]);
   const pct = (a, b) => (b > 0 ? Math.round((a / b) * 100) : 0);
-  // 一物一档完整率：必填字段齐全的器具占比
+  // 一物一档完整率：必填字段齐全的器具占比（缺字段/空集合均守护）
   const required = ['name', 'code', 'category', 'expireAt', 'store'];
-  const complete = (tools.data || []).filter((x) => required.every((k) => x[k])).length;
-  // 报废处置合规率：已规范处置的报废数 / 报废总数
+  const toolsData = (tools && tools.data) || [];
+  const complete = toolsData.filter((x) => x && required.every((k) => x[k])).length;
+  // 报废处置合规率：已规范处置的报废数 / 报废总数（除零保护）
   const scrapRate = scrapped.total ? pct(disposed.total, scrapped.total) : 100;
   return ok({
     dims: [
@@ -86,6 +120,7 @@ async function sixStandard() {
 
 // 报表导出聚合（M12 报表导出）
 async function exportReport(payload = {}) {
+  await ensureRole(SENSITIVE_ROLES);
   const { orgId } = payload;
   const b = baseFilter(orgId);
   const statuses = ['qualified', 'pending_test', 'in_use', 'maintaining', 'scrapped', 'missing'];
@@ -94,57 +129,77 @@ async function exportReport(payload = {}) {
   const byStatus = {}; const byCategory = {};
   await Promise.all(statuses.map(async (s) => { const r = await db.countBy('tools', { ...b, status: s }); byStatus[s] = r.total; }));
   await Promise.all(cats.map(async (c) => { const r = await db.countBy('tools', { ...b, category: c }); byCategory[c] = r.total; }));
-  return ok({ total: total.total, byStatus, byCategory });
+
+  // 生成 CSV（含组织维度，orgId 属用户输入需转义，防止公式注入）
+  const lines = [];
+  lines.push(csvRow(['报表类型', '安全工器具统计分析报表']));
+  lines.push(csvRow(['组织ID', orgId != null ? orgId : '全组织']));
+  lines.push(csvRow(['生成时间', new Date().toISOString()]));
+  lines.push([]);
+  lines.push(csvRow(['状态', '数量']));
+  statuses.forEach((s) => lines.push(csvRow([s, byStatus[s] || 0])));
+  lines.push([]);
+  lines.push(csvRow(['类别', '数量']));
+  cats.forEach((c) => lines.push(csvRow([c, byCategory[c] || 0])));
+  const csv = '﻿' + lines.join('\r\n'); // ﻿BOM 兼容 Excel
+
+  return ok({ total: total.total, byStatus, byCategory, csv });
 }
 
 // 每日指标快照（答复4：每日采集一次，支撑趋势与未来分析）
 // 由云函数定时器触发（config.json triggers），也可手动调用 action=snapshot
+// 注意：定时器无微信用户上下文，此处不强制 requireLogin，否则定时任务会失败。
 async function snapshot() {
   const today = ymd(new Date());
   const [d, s] = await Promise.all([dashboard({}), sixStandard()]);
+  // P0 守卫：d.data / s.data 可能为 null，避免 Cannot read 'total' of undefined
+  const dData = (d && d.data) || {};
+  const sData = (s && s.data) || {};
   const doc = {
     date: today,
-    total: d.data.total, qualified: d.data.qualified, pendingTest: d.data.pendingTest,
-    scrapped: d.data.scrapped, maintaining: d.data.maintaining, missing: d.data.missing,
-    expiringSoon: d.data.expiringSoon, warnings: d.data.warnings,
-    dims: (s.data && s.data.dims) || [],
+    total: dData.total, qualified: dData.qualified, pendingTest: dData.pendingTest,
+    scrapped: dData.scrapped, maintaining: dData.maintaining, missing: dData.missing,
+    expiringSoon: dData.expiringSoon, warnings: dData.warnings,
+    dims: (sData && sData.dims) || [],
     createdAt: new Date(),
   };
   // 同日不重复写入
   const exist = await db.listBy('daily_stats', { date: today }, 1);
-  if ((exist.data || []).length) {
-    const id = exist.data[0]._id;
+  const existData = (exist && exist.data) || [];
+  if (existData.length) {
+    const id = existData[0]._id;
     await db.update('daily_stats', id, doc);
     return ok({ date: today, updated: true });
   }
   const added = await db.add('daily_stats', doc);
-  return ok({ _id: added._id, date: today, created: true });
+  return ok({ _id: added && added._id, date: today, created: true });
 }
 
 // 趋势（最近 N 天快照）
 async function trend(payload = {}) {
+  ensureLogin();
   const n = Math.min(payload.days || 14, 60);
   const res = await db.listBy('daily_stats', {}, 200);
-  const list = (res.data || [])
+  const list = ((res && res.data) || [])
     .map((x) => ({ date: x.date, total: x.total, qualified: x.qualified, pendingTest: x.pendingTest, scrapped: x.scrapped, expiringSoon: x.expiringSoon }))
-    .sort((a, b) => a.date.localeCompare(b.date))
+    .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
     .slice(-n);
   return ok(list);
 }
 
 exports.main = async (event) => {
-  const { action, payload = {} } = event;
+  const { action, payload = {} } = event || {};
   try {
     // 定时器触发（无 action）默认执行快照采集
-    if (!action || (event && event.triggerName)) return snapshot();
+    if (!action || (event && event.triggerName)) return await snapshot();
     switch (action) {
-      case 'dashboard': return dashboard(payload);
-      case 'project': return dashboard(payload);
-      case 'myStats': return myStats(payload);
-      case 'sixStandard': return sixStandard(payload);
-      case 'exportReport': return exportReport(payload);
-      case 'snapshot': return snapshot();
-      case 'trend': return trend(payload);
+      case 'dashboard': return await dashboard(payload);
+      case 'project': return await dashboard(payload);
+      case 'myStats': return await myStats(payload);
+      case 'sixStandard': return await sixStandard(payload);
+      case 'exportReport': return await exportReport(payload);
+      case 'snapshot': return await snapshot();
+      case 'trend': return await trend(payload);
       default: return fail('未知 action: ' + action);
     }
   } catch (e) {

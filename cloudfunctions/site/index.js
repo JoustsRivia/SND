@@ -4,6 +4,30 @@ const db = require('./helpers/db');
 const ok = (data) => ({ code: 0, data });
 const fail = (message, code = 1) => ({ code, message });
 const now = () => new Date();
+
+// 身份守卫：非微信环境/未登录时 OPENID 为空，直接拦截返回 401
+function requireOpenid() {
+  const openid = getOpenid();
+  if (!openid) return { err: fail('未登录', 401) };
+  return { openid };
+}
+// 统一封装单文档读取：文档不存在/查询异常都返回 fail('器具不存在',404)，避免 SDK 原始错误泄露
+async function safeGetById(name, id) {
+  try {
+    const r = await db.getById(name, id);
+    return r && r.data ? r.data : null;
+  } catch (e) {
+    return null;
+  }
+}
+async function safeGetTool(id) {
+  try {
+    const r = await db.getTool(id);
+    return r && r.data ? r.data : null;
+  } catch (e) {
+    return null;
+  }
+}
 const pad = (n) => String(n).padStart(2, '0');
 const ymd = (d) => {
   const dt = d instanceof Date ? d : (d ? new Date(d) : null);
@@ -17,16 +41,21 @@ const DEFAULT_ITEMS = [
 
 // 点检任务（M6.1）
 async function checkTask() {
-  return ok({ items: DEFAULT_ITEMS, date: now() });
+  const g = requireOpenid();
+  if (g.err) return g.err;
+  // date 以 ymd 字符串返回，避免前端渲染 Date 对象出现英文日期
+  return ok({ items: DEFAULT_ITEMS, date: ymd(now()) });
 }
 
 // 提交点检（M6.1.2）
 async function submitCheck(payload) {
-  const openid = getOpenid();
+  const g = requireOpenid();
+  if (g.err) return g.err;
+  const openid = g.openid;
   const { toolId, items = [], abnormal = false, remark = '' } = payload;
   if (toolId) {
-    const t = await db.getTool(toolId);
-    if (!t.data) return fail('器具不存在', 404);
+    const t = await safeGetTool(toolId);
+    if (!t) return fail('器具不存在', 404);
   }
   const doc = { toolId: toolId || '', items, abnormal, remark, operator: openid, ts: now() };
   const added = await db.add('spot_checks', doc);
@@ -37,27 +66,32 @@ async function submitCheck(payload) {
 async function opGuide(payload) {
   const { id } = payload;
   if (id) {
-    const r = await db.getById('op_guides', id);
-    return ok(r.data || null);
+    const r = await safeGetById('op_guides', id);
+    return ok(r || null);
   }
   const res = await db.listBy('op_guides', {}, 50);
   return ok(res.data || []);
 }
 
-// 班前交底（M6.4）
+// 班前交底（M6.4）：仅接收白名单字段，杜绝任意字段写入 briefings 集合
 async function briefing(payload) {
-  const openid = getOpenid();
-  const doc = { ...payload, leader: openid, ts: now() };
+  const g = requireOpenid();
+  if (g.err) return g.err;
+  const openid = g.openid;
+  const { team = '', content = '', participants = '', date = '' } = payload || {};
+  const doc = { team, content, participants, date, leader: openid, ts: now() };
   const added = await db.add('briefings', doc);
   return ok({ _id: added._id, ...doc });
 }
 
 // 批量点检（api.batchSpotCheck(ids) 调用）
 async function batchCheck(payload) {
+  const g = requireOpenid();
+  if (g.err) return g.err;
+  const openid = g.openid;
   const { ids = [] } = payload;
   if (!ids.length) return fail('请选择器具');
   const tools = await db.listByIds('tools', ids);
-  const openid = getOpenid();
   const docs = (tools.data || []).map((t) => ({
     toolId: t._id, items: [{ name: '批量点检', result: '合格' }], abnormal: false, operator: openid, ts: now(),
   }));

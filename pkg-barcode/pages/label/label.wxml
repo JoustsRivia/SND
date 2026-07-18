@@ -5,7 +5,7 @@
     <view class="form-row">
       <text class="form-label">器具</text>
       <picker range="{{tools}}" range-key="name" value="{{idx}}" bindchange="onPick">
-        <view class="form-value">{{tools[idx].name || '请选择'}} ›</view>
+        <view class="form-value">{{idx >= 0 ? (tools[idx].name || '请选择') : '请选择'}} ›</view>
       </picker>
     </view>
     <button class="btn btn-primary btn-block" bindtap="onGen">生成标识牌文件</button>

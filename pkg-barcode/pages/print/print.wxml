@@ -3,7 +3,7 @@
   <view class="card">
     <view class="row"><text class="label">选择器具</text>
       <picker mode="selector" range="{{list}}" range-key="name" value="{{idx}}" bindchange="onPick">
-        <view class="picker">{{list[idx].name}}（{{list[idx].code}}）▾</view>
+        <view class="picker">{{list.length ? (list[idx].name + '（' + (list[idx].code || '') + '）') : '请选择器具'}}▾</view>
       </picker>
     </view>
     <button size="mini" type="primary" bindtap="onPrint">生成打印文件</button>

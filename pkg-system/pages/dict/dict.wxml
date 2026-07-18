@@ -1,10 +1,16 @@
 <!-- pkg-system/pages/dict/dict.wxml —— M13.2 字典与检查表模板管理 -->
 <view class="dict">
   <view class="card">
-    <text class="title">器具类别字典</text>
+    <view class="title-row">
+      <text class="title">器具类别字典</text>
+      <button class="mini-btn" size="mini" bindtap="onAddDict" loading="{{submitting}}">+ 新增</button>
+    </view>
     <view wx:for="{{dict}}" wx:key="_id" class="line">
       <text class="name">{{item.label}}</text>
-      <text class="muted">{{item.value}} · {{item.type}}</text>
+      <view class="ops">
+        <text class="op" catchtap="onEditDict" data-id="{{item._id}}">编辑</text>
+        <text class="op danger" catchtap="onRemoveDict" data-id="{{item._id}}">删除</text>
+      </view>
     </view>
     <view wx:if="{{dict.length === 0}}" class="muted">暂无字典项</view>
   </view>

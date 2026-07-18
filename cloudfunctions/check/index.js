@@ -13,6 +13,11 @@ async function requireRole(...roles) {
   return { u };
 }
 
+// 考核/审批类操作鉴权（S1）：仅管理角色可评分与审批
+async function requireApprover() {
+  return requireRole('lead', 'supervisor', 'project_lead', 'safety_officer', 'admin');
+}
+
 // 检查任务（M10.1）
 async function tasks() {
   const openid = getOpenid();
@@ -23,8 +28,15 @@ async function tasks() {
 // 现场检查提交（M10.2）
 async function submit(payload) {
   const { id, result = {}, remark = '' } = payload;
+  const openid = getOpenid();
   const r = await db.getById('inspections', id);
   if (!r.data) return fail('检查任务不存在', 404);
+  // 越权防护：非管理员须为本任务被指派人
+  const g = await requireRole('lead', 'supervisor', 'project_lead', 'safety_officer', 'admin');
+  const isManager = !g.err;
+  if (!isManager && r.data.assignee && r.data.assignee !== openid) {
+    return fail('仅被指派人或管理员可提交', 403);
+  }
   await db.update('inspections', id, { status: 'submitted', result, remark, submittedAt: now() });
   return ok({ id, status: 'submitted' });
 }
@@ -61,8 +73,15 @@ async function assignHazard(payload) {
 // 整改跟踪（M10.5）
 async function trackHazard(payload) {
   const { id, progressNote = '', evidence = [] } = payload;
+  const openid = getOpenid();
   const r = await db.getById('hazards', id);
   if (!r.data) return fail('隐患不存在', 404);
+  // 守卫：仅指派处理人或管理员可更新整改进展
+  const isAssignee = r.data.assignee === openid || r.data.assigneeOpenid === openid;
+  if (!isAssignee) {
+    const g = await requireRole('admin', 'supervisor', 'lead', 'project_lead', 'safety_officer');
+    if (g.err) return g.err;
+  }
   const logs = (r.data.trackLogs || []).concat({ progressNote, evidence, ts: now() });
   await db.update('hazards', id, { trackLogs: logs });
   return ok({ id, trackLogs: logs });
@@ -87,8 +106,10 @@ async function assessList(payload = {}) {
   return ok(res.data || []);
 }
 
-// 提交考核评分（M10 考核）
+// 提交考核评分（M10 考核）：仅管理角色可评分
 async function assess(payload) {
+  const g = await requireApprover();
+  if (g.err) return g.err;
   const openid = getOpenid();
   const { targetId, targetName, score, dimension, note = '' } = payload;
   if (!targetId || score == null) return fail('缺少考核对象或分数');

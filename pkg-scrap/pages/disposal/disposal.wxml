@@ -14,9 +14,12 @@
 
   <view wx:else class="card">
     <view class="row"><text class="label">销毁方式</text>
-      <picker mode="selector" range="{{methods}}" range-key="name" value="{{mIdx}}" bindchange="onMethod">
-        <view class="picker">{{methods[mIdx].name}} ▾</view></picker></view>
-    <view class="row"><text class="label">销毁日期</text><input class="input" type="date" value="{{destroyedAt}}" bindinput="onDate" /></view>
+      <picker mode="selector" range="{{methods}}" range-key="n" value="{{mIdx}}" bindchange="onMethod">
+        <view class="picker">{{methods[mIdx].n}} ▾</view></picker></view>
+    <view class="row"><text class="label">销毁日期</text>
+      <picker mode="date" value="{{destroyedAt}}" bindchange="onDate">
+        <view class="input picker">{{destroyedAt || '请选择日期'}} ▾</view>
+      </picker></view>
     <view class="row"><text class="label">经办人</text><input class="input" placeholder="姓名" value="{{handler}}" bindinput="onHandler" /></view>
     <view class="row col"><text class="label">销毁照片</text>
       <view class="photos">

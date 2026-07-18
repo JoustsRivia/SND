@@ -18,7 +18,13 @@ Page({
     list: [], loading: true, submitting: false,
   },
 
-  async onLoad() { await this.loadList(); },
+  async onLoad() {
+    // 登录守卫：未登录跳登录页
+    let profile = null;
+    try { profile = await api.getMyProfile(); } catch (e) { profile = null; }
+    if (!profile || !profile.bound) { wx.reLaunch({ url: '/pages/login/login' }); return; }
+    await this.loadList();
+  },
   async onPullDownRefresh() { await this.loadList(); wx.stopPullDownRefresh(); },
 
   async loadList() {
@@ -80,7 +86,7 @@ Page({
       if (!m.confirm) return;
       const progressNote = (m.content || '').trim();
       if (!progressNote) { wx.showToast({ title: '请输入进度说明', icon: 'none' }); return; }
-      await api.trackHazard({ id: item._id, progressNote });
+      await api.trackHazard(item._id, { progressNote });
       wx.showToast({ title: '已跟踪', icon: 'success' });
     } else if (r.tapIndex === 2) {
       await api.closeHazard(item._id);

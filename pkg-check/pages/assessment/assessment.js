@@ -11,7 +11,13 @@ Page({
     list: [], loading: true, submitting: false,
   },
 
-  async onLoad() { await this.loadList(); },
+  async onLoad() {
+    // 登录守卫：未登录跳登录页
+    let profile = null;
+    try { profile = await api.getMyProfile(); } catch (e) { profile = null; }
+    if (!profile || !profile.bound) { wx.reLaunch({ url: '/pages/login/login' }); return; }
+    await this.loadList();
+  },
   async onPullDownRefresh() { await this.loadList(); wx.stopPullDownRefresh(); },
 
   async loadList() {

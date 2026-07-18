@@ -1,7 +1,7 @@
 // cloudfunctions/borrow/index.js
 // 业务逻辑层（M5 领用归还 P0）：只引用 ./helpers，绝不直接 cloud.database()/getWXContext()。
 const { getOpenid } = require('./helpers/user');
-const { findTool, updateTool, findUser, addBorrow, listBorrow, listBy } = require('./helpers/db');
+const { findTool, updateTool, findUser, addBorrow, listBorrow, listBy, addRepair } = require('./helpers/db');
 
 const ok = (data) => ({ code: 0, data });
 const fail = (message, code = 1) => ({ code, message });
@@ -9,12 +9,15 @@ const fail = (message, code = 1) => ({ code, message });
 // 需持证的器具类别
 const SPECIAL = ['lifting', 'height', 'motor', 'lease'];
 
-// 校验领用人是否持有效证件（特种设备）
+// 校验领用人是否持有效证件（特种设备）：必须持有与器具类别精确对应的有效证件，
+// 杜绝「持任意一种特种证即可领用所有特种设备」的泛判越权。
 async function hasValidCert(openid, category) {
   if (!SPECIAL.includes(category)) return true;
   const now = Date.now();
   const res = await listBy('certificates', { openid, status: 'valid' }, 20);
-  return (res.data || []).some((c) => new Date(c.expireAt).getTime() > now);
+  return (res.data || []).some(
+    (c) => new Date(c.expireAt).getTime() > now && (c.category === category || c.category === 'all'),
+  );
 }
 
 // 领用（M5.1.1~M5.1.3）
@@ -60,6 +63,18 @@ async function returnTool(payload) {
   };
   if (damaged) patch.note = '归还外观损坏，已转入维修';
   await updateTool(id, patch);
+  // 损坏时同步生成报修单，使维修流程（M7）能直接接管，避免「状态变 maintaining 却无人跟进」
+  if (damaged) {
+    try {
+      await addRepair({
+        toolId: id, code: t.code, name: t.name,
+        fault: '归还外观损坏', desc: '归还时外观检查为损坏，自动转入报修',
+        status: 'pending', reporter: openid, auto: true, createdAt: new Date(),
+      });
+    } catch (e) {
+      console.error('[borrow] return auto-create repair failed', e);
+    }
+  }
   await addBorrow({ toolId: id, code: t.code, name: t.name, type: 'return', by: openid, appearance, ts: new Date() });
   return ok({ _id: id, status: patch.status, damaged });
 }
@@ -68,7 +83,8 @@ async function returnTool(payload) {
 async function records(payload = {}) {
   const { openid, orgId, type } = payload;
   const where = {};
-  if (openid) where.by = openid;
+  // 默认按当前领用人过滤，杜绝「领用记录全员可见」
+  where.by = openid || getOpenid();
   if (type) where.type = type;
   const res = await listBorrow(where, 50);
   return ok(res.data || []);

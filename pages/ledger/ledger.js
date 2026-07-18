@@ -141,7 +141,9 @@ Page({
     const res = await api.getToolList(params).catch(() => []);
     const list = Array.isArray(res) ? res : (res.list || []);
     const total = Array.isArray(res) ? res.length : (res.total || 0);
-    return { list, hasMore: list.length >= PAGE_SIZE && (page * PAGE_SIZE < total || total === 0) };
+    // 边界修正：当本页拉满且仍有下一页（page*PAGE_SIZE < total）才允许加载更多；
+    // 去掉原 `|| total === 0` 兜底，避免末页恰好满页时误判 hasMore=true 触发多余空请求。
+    return { list, hasMore: list.length >= PAGE_SIZE && page * PAGE_SIZE < total };
   },
 
   // 分台账切换（问题6）

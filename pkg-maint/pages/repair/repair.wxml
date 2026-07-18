@@ -18,9 +18,9 @@
       <view class="line"><text class="muted">上报人：</text><text>{{item.reporter || '—'}}</text></view>
 
       <view class="actions">
-        <button size="mini" type="primary" bindtap="onApprove">通过</button>
-        <button size="mini" bindtap="onRecord">维修登记</button>
-        <button size="mini" type="warn" bindtap="onRecheck">复检合格</button>
+        <button size="mini" type="primary" loading="{{acting}}" disabled="{{acting}}" bindtap="onApprove">通过</button>
+        <button size="mini" loading="{{acting}}" disabled="{{acting}}" bindtap="onRecord">维修登记</button>
+        <button size="mini" type="warn" loading="{{acting}}" disabled="{{acting}}" bindtap="onRecheck">复检合格</button>
       </view>
     </view>
   </view>

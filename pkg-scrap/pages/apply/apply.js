@@ -62,8 +62,8 @@ Page({
 
   async onPhoto() {
     const m = await wx.chooseMedia({ count: 3, mediaType: ['image'] });
-    const ids = [];
-    for (const f of m.tempFiles) ids.push(await api.uploadFile(f.tempFilePath, 'image'));
+    // 并行上传，缩短等待（原串行上传 3-5 张 = 3-5 倍延迟）
+    const ids = await Promise.all(m.tempFiles.map((f) => api.uploadFile(f.tempFilePath, 'image')));
     this.setData({ photos: this.data.photos.concat(ids) });
   },
 

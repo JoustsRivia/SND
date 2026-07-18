@@ -2,7 +2,7 @@
 // 业务逻辑层（M1 台账/档案/租赁/条码）：只引用 ./helpers，绝不直接 cloud.database()/getWXContext()。
 const { getOpenid } = require('./helpers/user');
 const {
-  findUser, addTool, updateTool, findTool, listTools, countTools, listOrgs, regExp, _,
+  findUser, addTool, updateTool, findTool, listTools, countTools, listOrgs, regExp, _, getCurrentUser,
 } = require('./helpers/db');
 
 const ok = (data) => ({ code: 0, data });
@@ -15,6 +15,32 @@ const CODE_PREFIX = {
 };
 // 高危专项类别：绝缘 / 高空 / 起重承压
 const HIGH_RISK_CATS = ['insulation', 'height', 'lifting'];
+
+// 类别中文名映射（与 utils/constants.js TOOL_CATEGORIES 对应；detail 派生 categoryName 用）
+const CAT_NAME = {
+  insulation: '绝缘安全工器具',
+  motor: '手持电动机具',
+  manual: '通用手动工具',
+  lifting: '起重承压类',
+  height: '高空防护器具',
+  measure: '计量检测器具',
+  temp_power: '临时配电配套',
+  lease: '大型租赁机具',
+};
+
+// 是否超期：expireAt 为空/非法 → 不超期；否则与当前时间比较
+function isExpired(t) {
+  if (!t || !t.expireAt) return false;
+  const e = new Date(t.expireAt).getTime();
+  if (isNaN(e)) return false;
+  return e < Date.now();
+}
+
+// 派生前端依赖字段（expired / categoryName），detail/update 返回前统一注入
+function derive(t) {
+  if (!t) return t;
+  return { ...t, expired: isExpired(t), categoryName: CAT_NAME[t.category] };
+}
 
 function genCode(category, seq) {
   const p = CODE_PREFIX[category] || 'QT';
@@ -47,7 +73,7 @@ async function subtreeIds(rootId) {
 async function scopeWhere(where, payload = {}) {
   const me = await findUser(getOpenid());
   const u = me.data && me.data[0];
-  const isAdmin = u && (u.role === 'lead' || u.role === 'supervisor');
+  const isAdmin = u && (u.role === 'lead' || u.role === 'supervisor' || u.role === 'admin');
   if (isAdmin) {
     if (payload.orgId) {
       const ids = await subtreeIds(payload.orgId); // 支持单位/项目部/班组任意节点下钻
@@ -96,17 +122,22 @@ async function detail(payload) {
   const { id } = payload;
   const res = await findTool(id);
   if (!res.data) return fail('器具不存在', 404);
-  return ok(res.data);
+  return ok(derive(res.data)); // S2/P0：派生 expired + categoryName
 }
 
-// 器具新增录入（M1.3.1）
+// 器具新增录入（M1.3.1）—— 含服务端 RBAC（S5/P1：跨机构建档拦截）
 async function create(payload) {
   const openid = getOpenid();
+  const u = await getCurrentUser(openid);
+  if (!u || u.status === 'disabled') return fail('账号不可用', 403);
+  const isAdmin = u.role === 'lead' || u.role === 'supervisor' || u.role === 'admin';
+  // 跨机构建档：非管理员只能落到自身绑定机构，显式 orgId 与自身不一致则拒绝
+  if (payload.orgId && payload.orgId !== u.orgId && !isAdmin) return fail('无权为其他机构建档', 403);
+  const orgId = (isAdmin && payload.orgId) ? payload.orgId : (u.orgId || '');
+  if (!orgId) return fail('未绑定机构，无法建档', 403);
   // S5 修复：原 Date.now()%10000 同秒会撞码，违反"一物一码"。改用「时间基+随机后缀」。
   const seq = (Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36)).slice(-8);
   const code = genCode(payload.category, seq);
-  const me = await findUser(openid);
-  const orgId = (me.data && me.data[0] && me.data[0].orgId) || payload.orgId || '';
   const doc = {
     code,
     name: payload.name,
@@ -124,6 +155,7 @@ async function create(payload) {
     leaseUnit: payload.leaseUnit || '',
     certNo: payload.certNo || '',
     operator: payload.operator || '',
+    operatorCert: payload.operatorCert || '', // S5/P1：现场操作人持证编号落库
     status: 'qualified',
     orgId,
     operations: [],
@@ -135,13 +167,20 @@ async function create(payload) {
   return ok({ _id: added._id, ...doc });
 }
 
-// 器具信息编辑（M1.3.4，记录变更）
+// 器具信息编辑（M1.3.4，记录变更）—— 含服务端 RBAC（S5/P1：跨机构编辑拦截）
 async function update(payload) {
   const { id, ...rest } = payload;
-  delete rest.code; delete rest.createdBy; delete rest.createdAt;
+  const u = await getCurrentUser(getOpenid());
+  if (!u || u.status === 'disabled') return fail('账号不可用', 403);
+  const isAdmin = u.role === 'lead' || u.role === 'supervisor' || u.role === 'admin';
+  const cur = await findTool(id);
+  if (!cur.data) return fail('器具不存在', 404);
+  // 非管理员只能编辑自身绑定机构的器具，防止越权改写他人机构档案
+  if (!isAdmin && cur.data.orgId !== u.orgId) return fail('无权编辑其他机构器具', 403);
+  delete rest.code; delete rest.createdBy; delete rest.createdAt; delete rest.orgId;
   await updateTool(id, { ...rest, updatedAt: new Date() });
   const res = await findTool(id);
-  return ok(res.data);
+  return ok(derive(res.data)); // S2/P0：派生 expired + categoryName
 }
 
 // 租赁机具专项列表（M1.3.7）

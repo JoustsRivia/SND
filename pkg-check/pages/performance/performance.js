@@ -27,7 +27,13 @@ Page({
     rewards: [],
   },
 
-  async onLoad() { await this.loadRank(); },
+  async onLoad() {
+    // 登录守卫：未登录跳登录页
+    let profile = null;
+    try { profile = await api.getMyProfile(); } catch (e) { profile = null; }
+    if (!profile || !profile.bound) { wx.reLaunch({ url: '/pages/login/login' }); return; }
+    await this.loadRank();
+  },
   async onPullDownRefresh() { await this.refresh(); wx.stopPullDownRefresh(); },
 
   refresh() {
@@ -51,11 +57,18 @@ Page({
   },
   bindPerson(e) { this.setData({ personId: e.detail.value }); },
   bindPersonName(e) { this.setData({ personName: e.detail.value }); },
-  onPickDim(e) { this.setData({ dimIdx: +e.detail.value }); },
-  onPickScore(e) { this.setData({ score: +this.data.scoreLabels[+e.detail.value] }); },
+  onPickDim(e) {
+    const i = Math.max(0, Math.min(DIMS.length - 1, +e.detail.value));
+    this.setData({ dimIdx: i });
+  },
+  onPickScore(e) {
+    const i = Math.max(0, Math.min(this.data.scoreLabels.length - 1, +e.detail.value));
+    this.setData({ score: +this.data.scoreLabels[i] });
+  },
 
   async onSubmitScore() {
-    const { personId, personName, dimIdx, score, month } = this.data;
+    const { personId, personName, score, month } = this.data;
+    const dimIdx = Math.max(0, Math.min(DIMS.length - 1, this.data.dimIdx));
     if (!personId.trim() || !personName.trim()) {
       wx.showToast({ title: '请填写被考核人', icon: 'none' });
       return;
@@ -94,7 +107,10 @@ Page({
     const mapped = (list || []).map((r) => ({ ...r, _type: r.type === 'reward' ? '奖励' : '处罚' }));
     this.setData({ rewards: mapped });
   },
-  onPickRtype(e) { this.setData({ rtypeIdx: +e.detail.value }); },
+  onPickRtype(e) {
+    const i = Math.max(0, Math.min(REWARD_TYPES.length - 1, +e.detail.value));
+    this.setData({ rtypeIdx: i });
+  },
   bindRPerson(e) { this.setData({ rpersonId: e.detail.value }); },
   bindRPersonName(e) { this.setData({ rpersonName: e.detail.value }); },
   bindRReason(e) { this.setData({ rreason: e.detail.value }); },

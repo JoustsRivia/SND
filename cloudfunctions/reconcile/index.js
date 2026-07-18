@@ -29,14 +29,15 @@ async function createTask(payload = {}) {
   const exist = await db.listBy('reconcile_tasks', { month }, 1);
   if (exist.data && exist.data.length) return fail('该月份已存在核对任务', 409);
 
-  const tools = await db.listBy('tools', {}, 200);
-  const items = (tools.data || []).map((t) => ({
+  const tools = await db.listAll('tools', {});
+  const items = (tools || []).map((t) => ({
     toolId: t._id,
     code: t.code || '',
     name: t.name || '',
     category: t.category || '',
     status: t.status || '',
-    store: (t.store && (t.store.name || t.store.zone)) || t.storeName || '',
+    // S4/P1：tools.store 为字符串（库位），直接取值；兜底 storeName
+    store: t.store || t.storeName || '',
     keeper: t.keeper || '',
     result: 'pending',   // pending | match | loss | surplus | abnormal
     note: '',

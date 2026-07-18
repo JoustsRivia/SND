@@ -25,8 +25,7 @@ Page({
 
   async onPhoto() {
     const m = await wx.chooseMedia({ count: 3, mediaType: ['image'] });
-    const ids = [];
-    for (const f of m.tempFiles) ids.push(await api.uploadFile(f.tempFilePath, 'image'));
+    const ids = await Promise.all(m.tempFiles.map((f) => api.uploadFile(f.tempFilePath, 'image')));
     this.setData({ photos: this.data.photos.concat(ids) });
   },
 

@@ -218,23 +218,51 @@ async function seedAdmin(payload = {}) {
   return ok({ username, role: 'admin' });
 }
 
-// ── 字典：按 type 查询；可选 upsert ───────────────────────────────────
+// ── 字典：增删改查（管理员）──────────────────────────────────────────
+// 以 type + key 唯一标识一个字典项，写入 dicts 集合。
+// 仅小程序管理员(admin)可维护字典，避免业务角色误改基础数据（S1 越权收口）。
 async function dict(payload) {
-  const { type, data } = payload;
+  const g = await requireAdmin();
+  if (g.err) return g.err;
+  const { op, type, key, data } = payload;
   await db.ensureCollection('dicts');
-  if (type) {
-    const res = await db.listBy('dicts', { type }, 100);
+
+  // 列表查询（默认）：按 type / key 过滤
+  if (op === 'list' || (!op && !data)) {
+    const where = {};
+    if (type) where.type = type;
+    if (key) where.key = key;
+    const res = await db.listBy('dicts', where, 200);
     return ok(res.data || []);
   }
-  if (data) {
+  // 新增
+  if (op === 'create' || op === 'add') {
+    if (!data || !data.type) return fail('字典项需指定 type', 400);
+    if (!data.key) return fail('字典项需指定 key', 400);
     const a = await db.add('dicts', { ...data, createdAt: now() });
     return ok({ _id: a._id });
   }
-  return fail('缺少 type 或 data');
+  // 修改
+  if (op === 'update') {
+    if (!data || !data._id) return fail('缺少 _id', 400);
+    const { _id, ...patch } = data;
+    patch.updatedAt = now();
+    await db.update('dicts', _id, patch);
+    return ok({ _id });
+  }
+  // 删除
+  if (op === 'remove') {
+    if (!data || !data._id) return fail('缺少 _id', 400);
+    await db.remove('dicts', data._id);
+    return ok({ _id: data._id });
+  }
+  return fail('缺少 type / data 或未知 op');
 }
 
 // ── 检查表模板管理：list / add ───────────────────────────────────────
 async function checkTemplate(payload) {
+  const g = await requireAdmin();
+  if (g.err) return g.err;
   const { op = 'list', data } = payload;
   await db.ensureCollection('check_templates');
   if (op === 'list') {
@@ -258,6 +286,8 @@ async function log(payload) {
 
 // M13.3 操作日志查询（按时间倒序）
 async function listLog(payload = {}) {
+  const g = await requireAdmin();
+  if (g.err) return g.err;
   const { limit = 50, type = '' } = payload;
   await db.ensureCollection('operation_logs');
   const where = {};
