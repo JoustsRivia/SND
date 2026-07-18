@@ -1,5 +1,15 @@
 <!-- pkg-barcode/pages/gen/gen.wxml —— M14.1 真实二维码生成与标签输出 -->
 <view class="gen">
+  <!-- 子功能：标识核验 / 标签打印 / 批量作业 -->
+  <view class="card subnav">
+    <text class="subnav-title">条码工具</text>
+    <view class="subnav-row">
+      <view class="subnav-item" data-url="/pkg-barcode/pages/query/query" bindtap="onGo">标识核验</view>
+      <view class="subnav-item" data-url="/pkg-barcode/pages/print/print" bindtap="onGo">标签打印</view>
+      <view class="subnav-item" data-url="/pkg-barcode/pages/batch/batch" bindtap="onGo">批量作业</view>
+    </view>
+  </view>
+
   <view class="card">
     <view class="row"><text class="label">选择器具</text>
       <picker mode="selector" range="{{list}}" range-key="name" value="{{idx}}" bindchange="onPick">

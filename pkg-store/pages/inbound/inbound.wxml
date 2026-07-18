@@ -1,0 +1,26 @@
+<!-- pkg-store/pages/inbound/inbound.wxml -->
+<view class="page-pad">
+  <view class="section-head"><view class="section-title">入库登记</view></view>
+  <view class="card">
+    <view class="form-row">
+      <text class="form-label">器具</text>
+      <picker range="{{tools}}" range-key="name" value="{{idx}}" bindchange="onPick">
+        <view class="form-value">{{tools[idx].name || '请选择'}} ›</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">库房</text>
+      <input class="form-input" placeholder="如：一号库房" value="{{storeName}}" bindinput="bindStore" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">分区</text>
+      <input class="form-input" placeholder="合格区/绝缘专柜" value="{{zone}}" bindinput="bindZone" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">货架</text>
+      <input class="form-input" placeholder="如：A-03" value="{{shelf}}" bindinput="bindShelf" />
+    </view>
+  </view>
+  <button class="btn btn-primary btn-block" loading="{{submitting}}" bindtap="onSubmit">确认入库</button>
+  <view class="safe-bottom"></view>
+</view>

@@ -41,10 +41,38 @@ const DICT_TYPE = {
   TEST_ORG: 'test_org',
 };
 
+// 需强制持证的器具类别（领用校验见 cloudfunctions/borrow/index.js SPECIAL）
+const SPECIAL_EQUIP_CATEGORIES = ['lifting', 'height', 'motor', 'lease'];
+
+// 特种作业证书类型（M9.2 持证管理）
+const CERT_TYPES = [
+  { code: 'welder', name: '焊接与热切割作业' },
+  { code: 'hoist', name: '起重机械作业' },
+  { code: 'height', name: '高处作业' },
+  { code: 'electric', name: '电工作业' },
+  { code: 'pressure', name: '压力容器作业' },
+  { code: 'other', name: '其他特种设备作业' },
+];
+
+// 证书类型 → 可领用器具类别（与 cloudfunctions/borrow SPECIAL 对应）
+const CERT_TO_CATEGORY = {
+  welder: 'motor',
+  hoist: 'lifting',
+  height: 'height',
+  electric: 'motor',
+  pressure: 'lease',
+  other: 'all', // 其他特种设备作业覆盖全部特种类别
+};
+
+// 微信订阅消息模板 ID（M11.2.1）。在微信公众平台「订阅消息」申请"预警通知"模板后填入；
+// 为空时前端仅记录订阅意图（api.subscribeWarning），不弹授权窗。
+const SUBSCRIBE_TMPL_ID = '';
+
 const HAZARD_LEVEL = { NORMAL: 'normal', SERIOUS: 'serious', MAJOR: 'major' };
 
 const WARNING_LEVEL = { NOTICE: 'notice', IMPORTANT: 'important', URGENT: 'urgent' };
 
 module.exports = {
   TOOL_STATUS, ROLES, TOOL_CATEGORIES, DICT_TYPE, HAZARD_LEVEL, WARNING_LEVEL,
+  SPECIAL_EQUIP_CATEGORIES, CERT_TYPES, CERT_TO_CATEGORY, SUBSCRIBE_TMPL_ID,
 };

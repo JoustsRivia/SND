@@ -37,4 +37,25 @@ Page({
       success: () => wx.showToast({ title: '已复制报表', icon: 'none' }),
     });
   },
+
+  // M12.2.5 报表导出：生成 CSV 文件并分享（支持表格软件打开）
+  onExportCsv() {
+    const rows = [['维度', '分类', '数量']];
+    this.data.byStatus.forEach((it) => rows.push(['按状态', it.name, it.value]));
+    this.data.byCategory.forEach((it) => rows.push(['按类别', it.name, it.value]));
+    const csv = '﻿' + rows.map((r) => r.join(',')).join('\n');
+    const fs = wx.getFileSystemManager();
+    const path = `${wx.env.USER_DATA_PATH}/工器具报表_${Date.now()}.csv`;
+    fs.writeFile({
+      filePath: path, data: csv, encoding: 'utf8',
+      success: () => {
+        wx.shareFileMessage({
+          filePath: path,
+          fileName: '工器具报表.csv',
+          fail: () => wx.showToast({ title: '分享取消', icon: 'none' }),
+        });
+      },
+      fail: () => wx.showToast({ title: '导出失败', icon: 'none' }),
+    });
+  },
 });

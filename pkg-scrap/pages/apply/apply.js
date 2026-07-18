@@ -1,6 +1,8 @@
 // pkg-scrap/pages/apply/apply.js —— M8.1.2 报废申请 + M8.1.1 强制报废自动判定
 const api = require('../../../utils/api');
 const network = require('../../../utils/network');
+const auth = require('../../../utils/auth');
+const { ROLES } = require('../../../utils/constants');
 
 // 强制报废 7 项判定（与 cloudfunctions/scrap/index.js SCRAP_RULES 对应）
 const RULES = [
@@ -18,14 +20,22 @@ Page({
     candidates: [], idx: 0,
     reason: '', photos: [], submitting: false,
     rules: RULES, symptoms: [], judge: null,
+    canApprove: false,
   },
 
   async onLoad() {
+    const p = auth.getProfile();
+    const canApprove = p && [ROLES.LEAD, ROLES.SUPERVISOR, ROLES.PROJECT_LEAD, ROLES.SAFETY_OFFICER].includes(p.role);
+    this.setData({ canApprove: !!canApprove });
+
     const r = await api.autoScrapCheck().catch(() => null);
     const candidates = (r && r.candidates) || [];
     this.setData({ candidates, idx: candidates.length ? 0 : -1 });
     if (candidates.length) this.runJudge();
   },
+
+  // 子功能入口：报废审批 / 处置
+  onGo(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }); },
 
   onPick(e) {
     this.setData({ idx: +e.detail.value, symptoms: [], judge: null });

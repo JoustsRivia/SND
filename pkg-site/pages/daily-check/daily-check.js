@@ -34,4 +34,7 @@ Page({
   },
 
   goCheck() { wx.navigateTo({ url: '/pkg-site/pages/spot-check/spot-check' }); },
+
+  // 子功能入口：操作规程 / 班前交底
+  onGo(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }); },
 });

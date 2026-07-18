@@ -50,6 +50,24 @@ async function list(payload = {}) {
   return ok(res.data || []);
 }
 
+// 保养计划列表（M7.1）
+async function listPlan(payload = {}) {
+  const { status } = payload;
+  const where = { type: 'plan' };
+  if (status) where.status = status;
+  const res = await db.listBy('maintenance_records', where, 100);
+  return ok(res.data || []);
+}
+
+// 保养执行登记（M7.1.2）
+async function execPlan(payload = {}) {
+  const { id, detail = '' } = payload;
+  const r = await db.getById('maintenance_records', id);
+  if (!r.data) return fail('计划不存在', 404);
+  await db.update('maintenance_records', id, { status: 'done', execAt: now(), execDetail: detail });
+  return ok({ id, status: 'done' });
+}
+
 // 复检（M7.5）：合格则器具回到 qualified
 async function recheck(payload) {
   const { id, pass = true } = payload;
@@ -68,6 +86,8 @@ exports.main = async (event) => {
       case 'create': return create(payload);
       case 'report': return report(payload);
       case 'list': return list(payload);
+      case 'listPlan': return listPlan(payload);
+      case 'execPlan': return execPlan(payload);
       case 'approve': return approve(payload);
       case 'record': return record(payload);
       case 'recheck': return recheck(payload);

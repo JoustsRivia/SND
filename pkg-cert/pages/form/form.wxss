@@ -1,0 +1,13 @@
+/* pkg-cert/pages/form/form.wxss */
+.form-row { display: flex; align-items: center; padding: 26rpx 4rpx; border-bottom: 1rpx solid var(--c-divider); }
+.form-row:last-child { border-bottom: none; }
+.form-label { width: 170rpx; font-size: 28rpx; color: var(--c-text); flex-shrink: 0; }
+.form-value { flex: 1; text-align: right; font-size: 28rpx; color: var(--c-text-weak); }
+.form-input { flex: 1; text-align: right; font-size: 28rpx; }
+.photo-row { display: flex; flex-wrap: wrap; gap: 16rpx; margin-bottom: 24rpx; }
+.photo-thumb, .photo-add {
+  width: 150rpx; height: 150rpx; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center; font-size: 26rpx;
+}
+.photo-thumb { background: var(--c-success-bg); color: var(--c-success); }
+.photo-add { background: var(--c-primary-soft); color: var(--c-primary); border: 1rpx dashed var(--c-primary); }

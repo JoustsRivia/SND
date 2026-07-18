@@ -1,0 +1,21 @@
+<!-- pkg-barcode/pages/label/label.wxml -->
+<view class="page-pad">
+  <view class="section-head"><view class="section-title">标识牌生成</view><view class="section-sub">仅生成文件，不接打印硬件</view></view>
+  <view class="card">
+    <view class="form-row">
+      <text class="form-label">器具</text>
+      <picker range="{{tools}}" range-key="name" value="{{idx}}" bindchange="onPick">
+        <view class="form-value">{{tools[idx].name || '请选择'}} ›</view>
+      </picker>
+    </view>
+    <button class="btn btn-primary btn-block" bindtap="onGen">生成标识牌文件</button>
+  </view>
+
+  <view wx:if="{{label}}" class="card">
+    <view class="kv" wx:for="{{[['名称',label.name],['编号',label.code],['类别',label.category],['规格',label.spec],['上次试验',label.lastTestDate],['有效截止',label.expireAt],['库房/保管',label.store+' / '+label.keeper]]}}" wx:key="index">
+      <text class="k">{{item[0]}}</text><text class="v">{{item[1] || '—'}}</text>
+    </view>
+    <button class="btn btn-outline btn-block" bindtap="onShare">分享/打印文件</button>
+  </view>
+  <view class="safe-bottom"></view>
+</view>

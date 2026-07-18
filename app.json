@@ -11,7 +11,7 @@
   "subpackages": [
     {
       "root": "pkg-ledger",
-      "pages": ["pages/tool-create/tool-create", "pages/lease/lease", "pages/import/import"]
+      "pages": ["pages/tool-create/tool-create", "pages/lease/lease", "pages/import/import", "pages/reconcile/reconcile"]
     },
     {
       "root": "pkg-test",
@@ -27,15 +27,15 @@
     },
     {
       "root": "pkg-barcode",
-      "pages": ["pages/gen/gen", "pages/query/query", "pages/print/print", "pages/batch/batch"]
+      "pages": ["pages/gen/gen", "pages/query/query", "pages/print/print", "pages/batch/batch", "pages/label/label"]
     },
     {
       "root": "pkg-purchase",
-      "pages": ["pages/apply/apply", "pages/approve/approve"]
+      "pages": ["pages/apply/apply", "pages/approve/approve", "pages/accept/accept"]
     },
     {
       "root": "pkg-store",
-      "pages": ["pages/register/register", "pages/records/records"]
+      "pages": ["pages/register/register", "pages/records/records", "pages/inbound/inbound"]
     },
     {
       "root": "pkg-site",
@@ -43,7 +43,7 @@
     },
     {
       "root": "pkg-maint",
-      "pages": ["pages/create/create", "pages/repair/repair"]
+      "pages": ["pages/create/create", "pages/repair/repair", "pages/plan/plan"]
     },
     {
       "root": "pkg-train",
@@ -51,7 +51,7 @@
     },
     {
       "root": "pkg-check",
-      "pages": ["pages/inspection/inspection", "pages/hazard/hazard", "pages/assessment/assessment"]
+      "pages": ["pages/inspection/inspection", "pages/hazard/hazard", "pages/assessment/assessment", "pages/performance/performance"]
     },
     {
       "root": "pkg-stats",
@@ -60,12 +60,16 @@
     {
       "root": "pkg-system",
       "pages": ["pages/org/org", "pages/dict/dict", "pages/log/log"]
+    },
+    {
+      "root": "pkg-cert",
+      "pages": ["pages/list/list", "pages/form/form"]
     }
   ],
   "preloadRule": {
     "pages/index/index": {
       "network": "all",
-      "packages": ["pkg-ledger", "pkg-test"]
+      "packages": ["pkg-ledger", "pkg-test", "pkg-cert", "pkg-borrow", "pkg-purchase"]
     }
   },
   "window": {

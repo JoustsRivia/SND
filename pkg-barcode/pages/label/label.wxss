@@ -1,0 +1,8 @@
+/* pkg-barcode/pages/label/label.wxss */
+.form-row { display: flex; align-items: center; padding: 26rpx 4rpx; }
+.form-label { width: 150rpx; font-size: 28rpx; color: var(--c-text); flex-shrink: 0; }
+.form-value { flex: 1; text-align: right; font-size: 28rpx; color: var(--c-text-weak); }
+.kv { display: flex; padding: 18rpx 0; border-bottom: 1rpx solid var(--c-divider); font-size: 26rpx; }
+.kv:last-child { border-bottom: none; }
+.k { width: 180rpx; color: var(--c-text-weak); }
+.v { flex: 1; text-align: right; color: var(--c-text); }

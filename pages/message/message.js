@@ -1,6 +1,7 @@
 // pages/message/message.js —— 消息中心（M11 站内消息 + 预警）
 const api = require('../../utils/api');
 const auth = require('../../utils/auth');
+const { SUBSCRIBE_TMPL_ID } = require('../../utils/constants');
 
 const LEVEL_META = {
   urgent:   { label: '紧急', cls: 'danger', icon: '⛔' },
@@ -101,5 +102,20 @@ Page({
     const n = (r && r.generated) || 0;
     wx.showToast({ title: n > 0 ? `新生成 ${n} 条预警` : '暂无新增预警', icon: n > 0 ? 'success' : 'none' });
     this.load();
+  },
+
+  // M11.2.1 微信订阅消息：用户自主确认订阅，后端记录订阅意图
+  async onSubscribe() {
+    const doRecord = () => api.subscribeWarning().catch(() => {});
+    if (!SUBSCRIBE_TMPL_ID) {
+      await doRecord();
+      wx.showToast({ title: '已记录订阅意愿', icon: 'success' });
+      return;
+    }
+    wx.requestSubscribeMessage({
+      tmplIds: [SUBSCRIBE_TMPL_ID],
+      success: async () => { await doRecord(); wx.showToast({ title: '订阅成功', icon: 'success' }); },
+      fail: () => wx.showToast({ title: '已取消订阅', icon: 'none' }),
+    });
   },
 });

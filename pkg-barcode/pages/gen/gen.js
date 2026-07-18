@@ -77,4 +77,7 @@ Page({
       complete: () => this.setData({ saving: false }),
     });
   },
+
+  // 子功能入口：标识核验 / 标签打印 / 批量作业
+  onGo(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }); },
 });

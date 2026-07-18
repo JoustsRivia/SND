@@ -1,0 +1,8 @@
+/* pkg-cert/pages/list/list.wxss */
+.cert { display: flex; align-items: center; padding: 24rpx; margin-bottom: 20rpx; }
+.cert-main { flex: 1; min-width: 0; }
+.cert-name { font-size: 30rpx; font-weight: 600; color: var(--c-text); }
+.cert-meta { font-size: 22rpx; color: var(--c-text-weak); margin-top: 6rpx; }
+.cert-ops { display: flex; flex-direction: column; margin-left: 16rpx; }
+.link { font-size: 24rpx; color: var(--c-primary); padding: 6rpx 0; }
+.link.danger { color: var(--c-danger); }

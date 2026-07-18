@@ -1,5 +1,13 @@
 <!-- pkg-system/pages/org/org.wxml —— M13 组织架构与用户管理 -->
 <view class="org">
+  <!-- 子功能：数据字典 / 操作日志 -->
+  <view class="card subnav">
+    <text class="subnav-title">系统工具</text>
+    <view class="subnav-row">
+      <view class="subnav-item" data-url="/pkg-system/pages/dict/dict" bindtap="onGo">数据字典</view>
+      <view class="subnav-item" data-url="/pkg-system/pages/log/log" bindtap="onGo">操作日志</view>
+    </view>
+  </view>
 
   <!-- ============ 组织架构 ============ -->
   <view class="card">

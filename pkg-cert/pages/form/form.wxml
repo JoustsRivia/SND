@@ -1,0 +1,34 @@
+<!-- pkg-cert/pages/form/form.wxml -->
+<view class="page-pad">
+  <view class="card">
+    <view class="form-row">
+      <text class="form-label">证书类型</text>
+      <picker mode="selector" range="{{types}}" range-key="name" value="{{typeIdx}}" bindchange="onType">
+        <view class="form-value">{{types[typeIdx].name}} ›</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">证书编号</text>
+      <input class="form-input" placeholder="请输入证件编号" value="{{no}}" bindinput="bindNo" />
+    </view>
+    <view class="form-row">
+      <text class="form-label">有效截止</text>
+      <picker mode="date" value="{{expireAt}}" bindchange="onExpire">
+        <view class="form-value">{{expireAt || '请选择日期'}} ›</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <text class="form-label">发证机构</text>
+      <input class="form-input" placeholder="选填" value="{{issuer}}" bindinput="bindIssuer" />
+    </view>
+  </view>
+
+  <view class="section-head"><view class="section-title">证件照片</view></view>
+  <view class="photo-row">
+    <view wx:for="{{photos}}" wx:key="*this" class="photo-thumb">✓</view>
+    <view class="photo-add" bindtap="onPhoto">+ 上传</view>
+  </view>
+
+  <button class="btn btn-primary btn-block" loading="{{submitting}}" bindtap="onSubmit">保存证书</button>
+  <view class="safe-bottom"></view>
+</view>

@@ -1,0 +1,30 @@
+<!-- pkg-cert/pages/list/list.wxml -->
+<view class="page-pad">
+  <view class="section-head">
+    <view class="section-title">我的特种作业证书</view>
+    <view class="section-sub">由领用人自行维护</view>
+  </view>
+
+  <view wx:if="{{!loading && !list.length}}" class="empty">
+    <view class="empty-icon">📜</view>
+    <view class="empty-title">暂无证书</view>
+    <view class="empty-desc">领用起重/高空/电动/租赁类器具需持有效证件，请先登记</view>
+  </view>
+
+  <view class="card cert" wx:for="{{list}}" wx:key="_id">
+    <view class="cert-main">
+      <view class="cert-name">{{item.typeName}}</view>
+      <view class="cert-meta">证号 {{item.no || '—'}} · 有效期至 {{item.expireShort || '—'}}</view>
+      <view class="cert-meta" wx:if="{{item.issuer}}">发证 {{item.issuer}}</view>
+    </view>
+    <view class="pill {{item.expired ? 'pill-danger' : 'pill-success'}}">{{item.expired ? '已过期' : '有效'}}</view>
+    <view class="cert-ops">
+      <text class="link" data-id="{{item._id}}" bindtap="onEdit">编辑</text>
+      <text class="link danger" data-id="{{item._id}}" bindtap="onDelete">删除</text>
+    </view>
+  </view>
+
+  <button class="btn btn-primary btn-block" bindtap="onAdd">+ 登记证书</button>
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+  <view class="safe-bottom"></view>
+</view>

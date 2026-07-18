@@ -5,7 +5,10 @@
     <view class="card">
       <text class="sec-title">器具总数</text>
       <text class="big">{{total}}</text>
-      <button size="mini" type="primary" bindtap="onCopy">复制报表</button>
+      <view class="row gap-2">
+        <button class="btn btn-primary flex-1" bindtap="onExportCsv">导出CSV</button>
+        <button class="btn btn-outline flex-1" bindtap="onCopy">复制文本</button>
+      </view>
     </view>
     <view class="card">
       <text class="sec-title">按状态分布</text>

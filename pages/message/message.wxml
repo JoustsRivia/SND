@@ -7,6 +7,7 @@
     <filter-bar tabs="{{tabs}}" activeTab="{{activeTab}}" bind:tab="onTab" />
     <view class="bar-ops">
       <text wx:if="{{hasUnread}}" class="mark-all" bindtap="onMarkAll">全部已读</text>
+      <text class="sub" bindtap="onSubscribe">订阅推送</text>
       <text class="gen" bindtap="onGenerate">生成预警</text>
     </view>
   </view>

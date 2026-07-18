@@ -19,10 +19,28 @@ Page({
 
   onDoPrint() {
     if (!this.data.label) return;
-    wx.showModal({
-      title: '打印标签',
-      content: '已生成标签打印文件，请通过蓝牙 / 云打印服务输出标签纸。',
-      showCancel: false, confirmText: '我知道了',
+    const f = this.data.label;
+    const lines = [
+      '工器具安全管理 — 器具标签',
+      '名称：' + (f.name || ''),
+      '编号：' + (f.code || ''),
+      '类别：' + (f.category || ''),
+      '试验日期：' + (f.testDate || ''),
+      '有效截止：' + (f.expireAt || ''),
+      '检测单位：' + (f.org || ''),
+      '保管人：' + (f.keeper || ''),
+    ];
+    const fs = wx.getFileSystemManager();
+    const path = `${wx.env.USER_DATA_PATH}/标签_${f.code || Date.now()}.txt`;
+    fs.writeFile({
+      filePath: path, data: lines.join('\n'), encoding: 'utf8',
+      success: () => {
+        wx.shareFileMessage({
+          filePath: path, fileName: '器具标签.txt',
+          fail: () => wx.showToast({ title: '已生成标签文件', icon: 'success' }),
+        });
+      },
+      fail: () => wx.showToast({ title: '生成失败', icon: 'none' }),
     });
   },
 });

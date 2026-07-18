@@ -36,3 +36,10 @@
 .go { font-size: 40rpx; color: var(--c-text-weak); margin-left: 8rpx; }
 .btn.block { margin: var(--sp-4) var(--sp-3) 0; }
 .loading { text-align: center; }
+
+/* 子功能入口 */
+.subnav { display: flex; gap: 16rpx; margin: var(--sp-3); }
+.subnav-item {
+  flex: 1; text-align: center; padding: 22rpx 0; border-radius: 14rpx;
+  background: #EEF3FF; color: #1A56DB; font-size: 28rpx; font-weight: 500;
+}

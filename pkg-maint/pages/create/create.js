@@ -13,6 +13,12 @@ Page({
     submitting: false,
   },
 
+  onLoad(query = {}) {
+    if (query.type === 'repair' || query.type === 'maintenance') {
+      this.setData({ type: query.type });
+    }
+  },
+
   onTypeChange(e) { this.setData({ type: e.detail.value }); },
   bindToolId(e) { this.setData({ toolId: e.detail.value }); },
   bindContent(e) { this.setData({ content: e.detail.value }); },

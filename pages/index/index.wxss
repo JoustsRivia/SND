@@ -62,3 +62,27 @@
 .todo-desc { display: block; margin-top: 6rpx; font-size: 22rpx; color: var(--c-text-weak); }
 .todo-arrow { color: var(--c-text-weak); font-size: 40rpx; margin-left: 12rpx; }
 .loading { text-align: center; }
+
+/* 模块九宫格（按角色权限动态展示） */
+.module-grid {
+  display: flex; flex-wrap: wrap;
+  margin: 0 var(--sp-3);
+  background: var(--c-surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  padding: var(--sp-3) 0;
+}
+.module-cell {
+  width: 33.33%;
+  display: flex; flex-direction: column; align-items: center;
+  padding: var(--sp-4) 0;
+  box-sizing: border-box;
+}
+.cell-hover { background: var(--c-primary-soft); border-radius: var(--r-md); }
+.module-icon {
+  width: 92rpx; height: 92rpx; border-radius: 26rpx;
+  background: var(--c-primary-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 46rpx; margin-bottom: 14rpx;
+}
+.module-label { font-size: 24rpx; color: var(--c-text); text-align: center; }

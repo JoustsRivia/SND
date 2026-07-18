@@ -21,6 +21,9 @@ const FN = {
   stats: 'stats',
   system: 'system',
   file: 'file',
+  cert: 'cert',
+  reconcile: 'reconcile',
+  performance: 'performance',
 };
 
 // ── 统一请求封装（transport 抽象层） ──────────────────────────────────
@@ -80,6 +83,8 @@ const approveRepair = (id) => invoke(FN.maintenance, 'approve', { id });
 const recordRepair = (data) => invoke(FN.maintenance, 'record', data);
 const recheckRepair = (id) => invoke(FN.maintenance, 'recheck', { id });
 const getRepairList = (params) => invoke(FN.maintenance, 'list', params);
+const listMaintenancePlans = (params) => invoke(FN.maintenance, 'listPlan', params);
+const execMaintenancePlan = (data) => invoke(FN.maintenance, 'execPlan', data);
 
 // ── 报废 M8 ──────────────────────────────────────────────────────────
 const autoScrapCheck = () => invoke(FN.scrap, 'autoCheck');
@@ -136,6 +141,7 @@ const getDashboard = () => invoke(FN.stats, 'dashboard');
 const getProjectDashboard = (orgId) => invoke(FN.stats, 'project', { orgId });
 const getSixStandard = () => invoke(FN.stats, 'sixStandard');
 const getMyStats = () => invoke(FN.stats, 'myStats');
+const getTrend = (params) => invoke(FN.stats, 'trend', params);
 const exportReport = (params) => invoke(FN.stats, 'exportReport', params);
 
 // ── 系统管理 M13 ──────────────────────────────────────────────────────
@@ -150,9 +156,33 @@ const manageCheckTemplate = (data) => invoke(FN.system, 'checkTemplate', data);
 // ── 条码文件 M14 ──────────────────────────────────────────────────────
 const generateBarcode = (id) => invoke(FN.tool, 'genBarcode', { id });
 const getBarcodeFile = (id) => invoke(FN.tool, 'barcodeFile', { id });
+const genLabel = (id) => invoke(FN.file, 'genLabel', { id });
 const batchInbound = (ids) => invoke(FN.store, 'batchInbound', { ids });
 const batchSpotCheck = (ids) => invoke(FN.site, 'batchCheck', { ids });
 const batchGenBarcode = (ids) => invoke(FN.tool, 'batchGen', { ids });
+
+// ── 持证管理 M9.2 ─────────────────────────────────────────────────────
+const certList = (params) => invoke(FN.cert, 'list', params);
+const myCerts = () => invoke(FN.cert, 'myCerts');
+const upsertCert = (data) => invoke(FN.cert, 'upsert', data);
+const deleteCert = (id) => invoke(FN.cert, 'remove', { id });
+const checkCert = (params) => invoke(FN.cert, 'check', params);
+
+// ── 账物核对 M1.4 ─────────────────────────────────────────────────────
+const createReconcileTask = (data) => invoke(FN.reconcile, 'createTask', data);
+const getReconcileList = (params) => invoke(FN.reconcile, 'list', params);
+const getReconcileTask = (id) => invoke(FN.reconcile, 'getTask', { id });
+const confirmReconcileItem = (data) => invoke(FN.reconcile, 'confirmItem', data);
+const finishReconcileTask = (id) => invoke(FN.reconcile, 'finishTask', { id });
+const getReconcileDiff = (params) => invoke(FN.reconcile, 'diff', params);
+
+// ── 人员考核 M10.3 ────────────────────────────────────────────────────
+const scorePerformance = (data) => invoke(FN.performance, 'score', data);
+const getPerformanceList = (params) => invoke(FN.performance, 'list', params);
+const getPerformanceRank = (params) => invoke(FN.performance, 'rank', params);
+const getPerformanceSummary = (params) => invoke(FN.performance, 'summary', params);
+const addReward = (data) => invoke(FN.performance, 'rewardAdd', data);
+const getRewardList = (params) => invoke(FN.performance, 'rewardList', params);
 
 // ── 文件上传（封装 wx.cloud.uploadFile，调用方不直接接触） ──────────────
 function uploadFile(filePath, type = 'image') {
@@ -199,11 +229,17 @@ module.exports = {
   // 预警
   getWarnings, readWarning, readAllWarnings, subscribeWarning, generateWarnings,
   // 统计
-  getDashboard, getProjectDashboard, getSixStandard, getMyStats, exportReport,
+  getDashboard, getProjectDashboard, getSixStandard, getMyStats, getTrend, exportReport,
   // 系统
   getOrgTree, manageOrg, manageUser, listUsers, seedAdmin, getDict, manageCheckTemplate,
   // 条码
-  generateBarcode, getBarcodeFile, batchInbound, batchSpotCheck, batchGenBarcode,
+  generateBarcode, getBarcodeFile, batchInbound, batchSpotCheck, batchGenBarcode, genLabel,
+  // 持证
+  certList, myCerts, upsertCert, deleteCert, checkCert,
+  // 账物核对
+  createReconcileTask, getReconcileList, getReconcileTask, confirmReconcileItem, finishReconcileTask, getReconcileDiff,
+  // 人员考核
+  scorePerformance, getPerformanceList, getPerformanceRank, getPerformanceSummary, addReward, getRewardList,
   // 文件/日志
   uploadFile, logOperation, getOperationLogs,
 };

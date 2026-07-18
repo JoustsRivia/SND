@@ -1,7 +1,6 @@
 {
   "usingComponents": {
-    "stats-card": "../../components/stats-card/stats-card",
-    "quick-actions": "../../components/quick-actions/quick-actions"
+    "stats-card": "../../components/stats-card/stats-card"
   },
   "navigationBarTitleText": "工作台",
   "enablePullDownRefresh": true,

@@ -32,5 +32,13 @@
     </block>
   </view>
 
+  <view class="card">
+    <text class="label block">附件（采购合同/合格证/试验报告）</text>
+    <view class="photo-row">
+      <view wx:for="{{form.attachments}}" wx:key="*this" class="photo-thumb">✓</view>
+      <view class="photo-add" bindtap="onPhoto">+ 上传</view>
+    </view>
+  </view>
+
   <button type="primary" loading="{{submitting}}" bindtap="onSubmit">{{editMode ? '保存修改' : '保存并生成编号'}}</button>
 </view>

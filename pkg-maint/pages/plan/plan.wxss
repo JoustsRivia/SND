@@ -1,0 +1,25 @@
+/* pkg-maint/pages/plan/plan.wxss */
+.plan { padding: 20rpx 24rpx 140rpx; }
+.empty { text-align: center; color: #9AA0A6; padding: 120rpx 0; display: flex; flex-direction: column; gap: 12rpx; }
+.empty .tip { font-size: 24rpx; }
+.card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.04); }
+.hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
+.tool { font-weight: 600; font-size: 30rpx; color: #1f2329; }
+.pill { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 20rpx; }
+.pill.warn { background: #FFF4E5; color: #C77700; }
+.pill.ok { background: #E6F7EC; color: #1A9E5B; }
+.row { display: flex; gap: 16rpx; padding: 6rpx 0; font-size: 26rpx; }
+.k { color: #8A9099; width: 130rpx; flex-shrink: 0; }
+.v { color: #1f2329; flex: 1; }
+.mini { margin-top: 12rpx; background: #1A56DB; color: #fff; }
+.fab {
+  position: fixed; right: 36rpx; bottom: 60rpx; width: 96rpx; height: 96rpx; border-radius: 50%;
+  background: #1A56DB; color: #fff; font-size: 56rpx; line-height: 96rpx; text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(26,86,219,0.35);
+}
+.mask { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: flex-end; z-index: 50; }
+.sheet { width: 100%; background: #fff; border-radius: 24rpx 24rpx 0 0; padding: 32rpx; box-sizing: border-box; }
+.sheet-hd { font-size: 32rpx; font-weight: 600; margin-bottom: 16rpx; }
+.area { width: 100%; height: 160rpx; border: 1rpx solid #e5e7eb; border-radius: 12rpx; padding: 16rpx; box-sizing: border-box; margin: 16rpx 0; font-size: 26rpx; }
+.sheet-btns { display: flex; gap: 24rpx; margin-top: 12rpx; }
+.sheet-btns button { flex: 1; }

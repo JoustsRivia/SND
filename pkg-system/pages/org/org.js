@@ -238,7 +238,7 @@ Page({
     });
   },
 
-  async onUserDelete(e) {
+  async   onUserDelete(e) {
     const id = e.currentTarget.dataset.id;
     const ok = await new Promise((resolve) => wx.showModal({
       title: '删除用户', content: '确认删除该用户账号？此操作不可恢复。',
@@ -254,4 +254,7 @@ Page({
       wx.showToast({ title: (err && err.message) || '删除失败', icon: 'none' });
     }
   },
+
+  // 子功能入口：数据字典 / 操作日志
+  onGo(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }); },
 });

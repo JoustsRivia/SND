@@ -1,0 +1,36 @@
+<!-- pkg-maint/pages/plan/plan.wxml -->
+<view class="plan">
+  <view wx:if="{{!loading && list.length === 0}}" class="empty">
+    <text>暂无保养计划</text>
+    <text class="tip">点击右下角「+」从"维保报修"发起保养计划</text>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="_id" class="card">
+    <view class="hd">
+      <text class="tool">{{item.toolId}}</text>
+      <text class="pill {{item._status.cls}}">{{item._status.text}}</text>
+    </view>
+    <view class="row"><text class="k">计划日期</text><text class="v">{{item._planDate || '-'}}</text></view>
+    <view class="row"><text class="k">保养内容</text><text class="v">{{item.content}}</text></view>
+    <view wx:if="{{item.status === 'done'}}" class="row">
+      <text class="k">执行记录</text><text class="v">{{item.execDetail || '（无备注）'}}</text>
+    </view>
+    <button wx:if="{{item.status !== 'done'}}" class="mini" size="mini" data-idx="{{index}}" bindtap="onExec">执行登记</button>
+  </view>
+
+  <view class="fab" bindtap="onCreate">＋</view>
+
+  <!-- 执行登记弹窗 -->
+  <view wx:if="{{showExec}}" class="mask" bindtap="onCloseExec">
+    <view class="sheet" catchtap="">
+      <view class="sheet-hd">保养执行登记</view>
+      <view class="row"><text class="k">器具</text><text class="v">{{cur.toolId}}</text></view>
+      <view class="row"><text class="k">计划日期</text><text class="v">{{cur._planDate}}</text></view>
+      <textarea class="area" placeholder="执行情况 / 更换部件 / 备注" value="{{execDetail}}" bindinput="bindDetail" />
+      <view class="sheet-btns">
+        <button size="mini" bindtap="onCloseExec">取消</button>
+        <button type="primary" size="mini" bindtap="onConfirmExec">确认执行</button>
+      </view>
+    </view>
+  </view>
+</view>

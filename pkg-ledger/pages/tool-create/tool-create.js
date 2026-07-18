@@ -1,5 +1,6 @@
 // pkg-ledger/pages/tool-create/tool-create.js —— M1.3.1 新增录入 / M1.3.4 信息编辑
 const api = require('../../../utils/api');
+const network = require('../../../utils/network');
 const { TOOL_CATEGORIES } = require('../../../utils/constants');
 
 Page({
@@ -13,6 +14,7 @@ Page({
       name: '', spec: '', factoryNo: '', purchaseDate: '',
       testPeriod: 6, lastTestDate: '', expireAt: '', store: '', keeper: '', source: 'self',
       leaseUnit: '', certNo: '', operator: '', // M1.3.7 租赁字段
+      attachments: [], // M1.3.5 附件（合同/合格证/试验报告）
     },
     submitting: false,
   },
@@ -38,6 +40,7 @@ Page({
         lastTestDate: t.lastTestDate || '', expireAt: t.expireAt || '',
         store: t.store || '', keeper: t.keeper || '', source: t.source || 'self',
         leaseUnit: t.leaseUnit || '', certNo: t.certNo || '', operator: t.operator || '',
+        attachments: t.attachments || [],
       },
     });
   },
@@ -45,6 +48,15 @@ Page({
   onCat(e) { this.setData({ catIndex: +e.detail.value }); },
   onSource(e) { this.setData({ sourceIndex: +e.detail.value }); },
   bind(e) { this.setData({ ['form.' + e.currentTarget.dataset.k]: e.detail.value }); },
+
+  // M1.3.5 附件上传（采购合同/合格证/型式试验报告）
+  async onPhoto() {
+    try { await network.requireOnline(); } catch (err) { return; }
+    const m = await wx.chooseMedia({ count: 4, mediaType: ['image'] });
+    const ids = [];
+    for (const f of m.tempFiles) ids.push(await api.uploadFile(f.tempFilePath, 'image'));
+    this.setData({ ['form.attachments']: (this.data.form.attachments || []).concat(ids) });
+  },
 
   async onSubmit() {
     const f = this.data.form;

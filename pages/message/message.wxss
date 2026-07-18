@@ -1,6 +1,7 @@
 /* pages/message/message.wxss —— 消息中心 */
 .bar { display: flex; align-items: center; }
 .mark-all { font-size: var(--fs-sm); color: var(--c-primary); padding: 0 var(--sp-3); flex-shrink: 0; }
+.sub { font-size: var(--fs-sm); color: var(--c-success); padding: 0 var(--sp-3); flex-shrink: 0; }
 .list { padding: 0 var(--sp-3); }
 .msg {
   display: flex; align-items: stretch;

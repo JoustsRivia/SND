@@ -1,6 +1,12 @@
 <!-- pkg-site/pages/daily-check/daily-check.wxml —— M6 每日点检汇总看板 -->
 <view wx:if="{{loading}}" class="loading">加载中…</view>
 <block wx:else>
+  <!-- 子功能：操作规程 / 班前交底 -->
+  <view class="subnav">
+    <view class="subnav-item" data-url="/pkg-site/pages/guide/guide" bindtap="onGo">操作规程</view>
+    <view class="subnav-item" data-url="/pkg-site/pages/briefing/briefing" bindtap="onGo">班前交底</view>
+  </view>
+
   <view class="hero">
     <view class="hero-top">
       <text class="date">{{date}}</text>

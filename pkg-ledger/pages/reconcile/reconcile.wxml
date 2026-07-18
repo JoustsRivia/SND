@@ -1,0 +1,69 @@
+<!-- pkg-ledger/pages/reconcile/reconcile.wxml -->
+<view class="rec">
+  <view class="tabs">
+    <view class="tab {{tab==='task'?'on':''}}" data-v="task" bindtap="onTab">核对任务</view>
+    <view class="tab {{tab==='diff'?'on':''}}" data-v="diff" bindtap="onTab">差异清单</view>
+  </view>
+
+  <!-- 任务页 -->
+  <block wx:if="{{tab==='task'}}">
+    <button class="add" bindtap="onCreate">＋ 新建月度账物核对</button>
+    <view wx:if="{{!loading && tasks.length===0}}" class="empty">暂无核对任务</view>
+    <view wx:for="{{tasks}}" wx:key="_id" class="card" data-id="{{item._id}}" bindtap="onOpenTask">
+      <view class="hd">
+        <text class="month">{{item.month}}</text>
+        <text class="pill {{item._statusCls}}">{{item._status}}</text>
+      </view>
+      <view class="row"><text class="k">器具总数</text><text class="v">{{item.total}}</text></view>
+      <view class="row"><text class="k">差异项</text><text class="v bad">{{item.diff}}</text></view>
+    </view>
+  </block>
+
+  <!-- 差异页 -->
+  <block wx:if="{{tab==='diff'}}">
+    <view wx:if="{{!loading && diffs.length===0}}" class="empty">暂无差异记录</view>
+    <view wx:for="{{diffs}}" wx:key="index" class="card">
+      <view class="hd">
+        <text class="month">{{item.month}}</text>
+        <text class="pill {{item._result.cls}}">{{item._result.text}}</text>
+      </view>
+      <view class="row"><text class="k">编码</text><text class="v">{{item.code}}</text></view>
+      <view class="row"><text class="k">名称</text><text class="v">{{item.name}}</text></view>
+      <view class="row"><text class="k">库位</text><text class="v">{{item.store}}</text></view>
+      <view wx:if="{{item.note}}" class="row"><text class="k">说明</text><text class="v">{{item.note}}</text></view>
+    </view>
+  </block>
+
+  <!-- 任务明细弹层 -->
+  <view wx:if="{{taskDetail}}" class="mask" bindtap="onCloseDetail">
+    <view class="sheet" catchtap="">
+      <view class="sheet-hd">
+        <text>{{taskDetail.month}} 账物核对</text>
+        <text class="pill {{taskDetail.status==='done'?'ok':'warn'}}">{{taskDetail.status==='done'?'已完成':'核对中'}}</text>
+      </view>
+      <scroll-view scroll-y class="items">
+        <view wx:for="{{taskDetail.items}}" wx:key="toolId" class="item">
+          <view class="item-hd">
+            <text class="code">{{item.code}}</text>
+            <text class="name">{{item.name}}</text>
+          </view>
+          <view class="item-sub">{{item.store}} · {{item.status}}</view>
+          <view wx:if="{{taskDetail.status!=='done'}}" class="seg">
+            <view wx:for="{{RESULT_KEYS}}" wx:for-item="rk" wx:key="rk"
+                  class="seg-btn {{item.result===rk?'on':''}}" data-item-id="{{item.toolId}}" data-result="{{rk}}" bindtap="onSetResult">
+              {{RESULT[rk].text}}
+            </view>
+          </view>
+          <view wx:else class="seg">
+            <text class="pill {{item._result.cls}}">{{item._result.text}}</text>
+            <text wx:if="{{item.note}}" class="note">{{item.note}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view wx:if="{{taskDetail.status!=='done'}}" class="sheet-btns">
+        <button size="mini" bindtap="onCloseDetail">关闭</button>
+        <button type="primary" size="mini" bindtap="onFinish">完成核对</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,5 +1,14 @@
 <!-- pkg-check/pages/hazard/hazard.wxml —— M10.2 隐患管理 -->
 <view class="hazard">
+  <!-- 子功能：现场检查 / 考核评比 -->
+  <view class="card subnav">
+    <text class="subnav-title">监督模块</text>
+    <view class="subnav-row">
+      <view class="subnav-item" data-url="/pkg-check/pages/inspection/inspection" bindtap="onGo">现场检查</view>
+      <view class="subnav-item" data-url="/pkg-check/pages/assessment/assessment" bindtap="onGo">考核评比</view>
+    </view>
+  </view>
+
   <view class="card form">
     <text class="sec-title">隐患上报</text>
     <view class="row col">

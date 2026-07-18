@@ -44,6 +44,9 @@ Page({
   bindDesc(e) { this.setData({ desc: e.detail.value }); },
   bindLocation(e) { this.setData({ location: e.detail.value }); },
 
+  // 子功能入口：现场检查 / 考核评比
+  onGo(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }); },
+
   async onSubmit() {
     const desc = this.data.desc.trim();
     const location = this.data.location.trim();

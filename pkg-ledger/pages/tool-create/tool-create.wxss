@@ -4,4 +4,9 @@
 .label { width: 180rpx; font-size: 28rpx; color: var(--c-text); }
 .picker { flex: 1; text-align: right; color: var(--c-text); }
 .input { flex: 1; text-align: right; font-size: 28rpx; }
+.label.block { display: block; width: auto; margin-bottom: 16rpx; }
+.photo-row { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.photo-thumb, .photo-add { width: 140rpx; height: 140rpx; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 24rpx; }
+.photo-thumb { background: var(--c-success-bg); color: var(--c-success); }
+.photo-add { background: var(--c-primary-soft); color: var(--c-primary); border: 1rpx dashed var(--c-primary); }
 .form button { margin-top: 40rpx; background: var(--c-primary); }

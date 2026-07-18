@@ -1,5 +1,14 @@
 /* pkg-barcode/pages/gen/gen.wxss —— M14.1 */
 .gen { padding: 24rpx; }
+
+/* 子功能入口 */
+.subnav { padding: 20rpx 24rpx; }
+.subnav-title { font-size: 24rpx; color: #8A9099; }
+.subnav-row { display: flex; gap: 14rpx; margin-top: 12rpx; }
+.subnav-item {
+  flex: 1; text-align: center; padding: 20rpx 0; border-radius: 12rpx;
+  background: #EEF3FF; color: #1A56DB; font-size: 26rpx; font-weight: 500;
+}
 .card {
   background: var(--c-bg-card);
   border-radius: 24rpx;

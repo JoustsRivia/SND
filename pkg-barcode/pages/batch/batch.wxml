@@ -1,19 +1,25 @@
-<!-- pkg-barcode/pages/batch/batch.wxml —— M14 批量生成条码 -->
-<view class="batch">
+<!-- pkg-barcode/pages/batch/batch.wxml —— M14.2 批量操作 -->
+<view class="batch page-pad">
+  <view class="card">
+    <view class="form-row">
+      <text class="form-label">操作类型</text>
+      <picker mode="selector" range="{{modes}}" range-key="label" value="{{modeIdx}}" bindchange="onMode">
+        <view class="form-value">{{modes[modeIdx].label}} ›</view>
+      </picker>
+    </view>
+  </view>
+
   <view class="card">
     <text class="sec-title">选择器具（已选 {{selected.length}}）</text>
     <view wx:for="{{list}}" wx:key="_id" class="tool" data-id="{{item._id}}" bindtap="onToggle">
       <text>{{item.name}}（{{item.code}}）</text>
       <text class="tick {{selected.indexOf(item._id) >= 0 ? 'on' : ''}}">{{selected.indexOf(item._id) >= 0 ? '✓' : ''}}</text>
     </view>
-    <button type="primary" loading="{{generating}}" bindtap="onGen">批量生成条码</button>
+    <button class="btn btn-primary btn-block" loading="{{doing}}" bindtap="onExec">{{modes[modeIdx].label}}</button>
   </view>
 
   <view wx:if="{{result}}" class="card">
-    <text class="sec-title">生成结果（{{result.count}}）</text>
-    <view wx:for="{{result.list}}" wx:key="_id" class="rez">
-      <text class="rn">{{item.name}}</text>
-      <text class="rc">{{item.code}} · {{item.qr}}</text>
-    </view>
+    <text class="sec-title">操作结果：成功 {{result.count}} 条</text>
   </view>
+  <view class="safe-bottom"></view>
 </view>

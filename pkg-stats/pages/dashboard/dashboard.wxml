@@ -1,7 +1,31 @@
 <!-- pkg-stats/pages/dashboard/dashboard.wxml —— M12.1 统计分析看板 -->
-<view class="dashboard">
+<view class="dashboard page-pad">
   <view wx:if="{{loading}}" class="card muted">加载中…</view>
-  <view wx:else class="card">
-    <stats-card items="{{items}}" columns="{{4}}" />
-  </view>
+  <block wx:else>
+    <view class="card">
+      <stats-card items="{{items}}" columns="{{4}}" />
+    </view>
+
+    <view class="card">
+      <view class="section-head" style="margin:0 0 16rpx">
+        <view class="section-title">近 7 日器具总量趋势</view>
+      </view>
+      <view class="trend" wx:if="{{trend.length}}">
+        <view class="trend-row" wx:for="{{trend}}" wx:key="date">
+          <text class="trend-date">{{item.date}}</text>
+          <view class="trend-bar-wrap">
+            <view class="trend-bar" style="width:{{item.total / maxTrend * 100}}%"></view>
+          </view>
+          <text class="trend-val">{{item.total}}</text>
+        </view>
+      </view>
+      <view wx:else class="muted">暂无历史快照（每日 01:00 自动采集）</view>
+    </view>
+
+    <view class="row gap-2">
+      <button class="btn btn-outline flex-1" bindtap="goSix">六化达标</button>
+      <button class="btn btn-outline flex-1" bindtap="goReport">报表导出</button>
+    </view>
+  </block>
+  <view class="safe-bottom"></view>
 </view>

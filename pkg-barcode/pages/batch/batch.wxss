@@ -1,6 +1,9 @@
 /* pkg-barcode/pages/batch/batch.wxss */
 .batch { padding-bottom: 40rpx; }
 .sec-title { font-size: 30rpx; font-weight: 600; display: block; margin-bottom: 16rpx; }
+.form-row { display: flex; align-items: center; padding: 20rpx 0; }
+.form-label { width: 150rpx; font-size: 28rpx; color: var(--c-text); flex-shrink: 0; }
+.form-value { flex: 1; text-align: right; font-size: 28rpx; color: var(--c-text-weak); }
 .tool { display: flex; justify-content: space-between; align-items: center; padding: 18rpx 0; border-bottom: 1rpx solid var(--c-divider); font-size: 28rpx; }
 .tick { width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border: 1rpx solid var(--c-border); border-radius: 50%; color: #fff; }
 .tick.on { background: var(--c-primary); border-color: var(--c-primary); }
