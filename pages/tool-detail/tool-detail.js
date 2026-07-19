@@ -2,9 +2,12 @@
 const api = require('../../utils/api');
 const auth = require('../../utils/auth');
 const network = require('../../utils/network');
+const { buildFlow } = require('../../utils/flow');
+const theme = require('../../utils/theme');
+const app = getApp();
 
 Page({
-  data: { id: '', tool: null, loading: true, timeline: [], actions: [], banner: null },
+  data: { id: '', tool: null, loading: true, timeline: [], actions: [], banner: null, flow: null, themeClass: '' },
 
   onLoad(opts) {
     if (!opts.id) {
@@ -13,6 +16,10 @@ Page({
     }
     this.setData({ id: opts.id });
     this.load(opts.id);
+  },
+
+  onShow() {
+    this.setData({ themeClass: theme.classOf(app.globalData.theme) });
   },
 
   async load(id) {
@@ -39,7 +46,9 @@ Page({
     }));
     timeline.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
 
-    this.setData({ tool: t, timeline, loading: false });
+    // 领用→归还生命周期步进器（以器具状态推导）
+    const flow = buildFlow('borrow', t.status);
+    this.setData({ tool: t, timeline, flow, loading: false });
     this.buildBanner(t);
     this.buildActions(t);
   },

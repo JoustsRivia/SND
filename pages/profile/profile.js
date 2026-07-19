@@ -1,6 +1,8 @@
 // pages/profile/profile.js —— 我的（个人 / 资质 / 设置入口）
 const api = require('../../utils/api');
 const auth = require('../../utils/auth');
+const theme = require('../../utils/theme');
+const app = getApp();
 
 const ROLE_TEXT = {
   lead: '专班负责人', project_lead: '项目部负责人', safety_officer: '专职安全员',
@@ -10,7 +12,7 @@ const ROLE_TEXT = {
 const ADMIN_ROLES = ['admin'];
 
 Page({
-  data: { profile: null, roleText: '', avatarText: '我', orgName: '', stats: [], groups: [] },
+  data: { profile: null, roleText: '', avatarText: '我', orgName: '', stats: [], groups: [], themeClass: '', themeDark: false },
 
   async onLoad() {
     if (!(await auth.requireServerLogin())) return;
@@ -19,7 +21,17 @@ Page({
 
   onShow() {
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return; }
+    // 同步全局主题到本页根视图
+    this.setData({ themeClass: theme.classOf(app.globalData.theme), themeDark: app.globalData.theme === 'dark' });
     this.load();
+  },
+
+  onThemeToggle(e) {
+    const dark = !!e.detail.value;
+    const mode = dark ? 'dark' : 'auto';
+    theme.setMode(mode);
+    app.globalData.theme = mode;
+    this.setData({ themeClass: theme.classOf(mode), themeDark: dark });
   },
 
   async load() {

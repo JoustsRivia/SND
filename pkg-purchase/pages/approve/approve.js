@@ -1,11 +1,13 @@
 // pkg-purchase/pages/approve/approve.js —— M2.2 采购审批
 const api = require('../../../utils/api');
 const network = require('../../../utils/network');
+const { buildFlow } = require('../../../utils/flow');
 
 Page({
   data: {
     list: [],
     records: [],
+    selectedId: '',
     loading: true,
     processing: '',
   },
@@ -16,14 +18,21 @@ Page({
   async load() {
     this.setData({ loading: true });
     const list = await api.getPurchaseList({ status: 'pending' }).catch(() => []);
-    const records = (list || []).map((it) => ({
+    // 注入流程阶段（申请→审批→验收→入库），让采购进度被感知
+    const list2 = (list || []).map((it) => ({ ...it, flow: buildFlow('purchase', it.status) }));
+    const records = list2.map((it) => ({
       time: it.createdAt,
       title: it.name,
       desc: '数量 ' + it.qty + ' 预算 ' + it.budget,
       operator: it.applicant,
       status: it.status,
     }));
-    this.setData({ list: list || [], records, loading: false });
+    this.setData({ list: list2, records, selectedId: '', loading: false });
+  },
+
+  onTap(e) {
+    const id = e.currentTarget.dataset.id;
+    this.setData({ selectedId: this.data.selectedId === id ? '' : id });
   },
 
   async onDecision(e) {

@@ -279,6 +279,9 @@ page {
 
   /* —— 展示/数字字号 —— */
   --fs-hero: 72rpx;  --fs-display: 56rpx;
+
+  /* —— 字体族（等宽数字；SNDNum 未就绪时回退系统等宽栈）—— */
+  --font-num: 'SNDNum', 'SF Mono', 'Roboto Mono', ui-monospace, 'Courier New', monospace;
 }
 
 /* ============================ 状态轨卡片 ============================ */
@@ -332,7 +335,87 @@ page {
 .t-display { font-size: var(--fs-display); font-weight: 700; line-height: 1.1; }
 .t-hero { font-size: var(--fs-hero); font-weight: 800; line-height: 1; }
 
+/* ============================ 字体（见 utils/fonts.js 加载脚手架） ============================ */
+/* 等宽数字：仪表盘统计、Hero 数字等；SNDNum 未就绪时自动回退系统等宽栈，
+   故离线/被网络策略拦截也不影响排版，仅数字字距略变。 */
+.font-num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+/* 展示标题字：与等宽数字同源，保证大字号下的数字一致性 */
+.font-display {
+  font-family: var(--font-num), -apple-system, 'PingFang SC', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5rpx;
+}
+/* 图标字体（可选）：SNDIcon 就绪后生效；未加载时回退系统字体（emoji 仍正常显示）。
+   接入步骤见 utils/fonts.js 顶部注释与 DESIGN_SYSTEM.md §6 / P2。 */
+.iconfont {
+  font-family: 'SNDIcon', -apple-system, sans-serif;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
 /* 进场错峰 */
 .fade-in-1 { animation: fadeIn var(--dur-base) var(--ease-out) both; }
 .fade-in-2 { animation: fadeIn var(--dur-base) var(--ease-out) 80ms both; }
 .fade-in-3 { animation: fadeIn var(--dur-base) var(--ease-out) 160ms both; }
+
+/* =========================================================================
+   夜间主题（深色作业终端风）
+   - 自动：跟随系统 prefers-color-scheme: dark，覆盖所有页面
+   - 手动：.theme-dark 类（由 profile 切换持久化），覆盖 opted-in 页面根视图
+   两套声明内容一致，仅作用域不同（page / .theme-dark 容器）。
+   ========================================================================= */
+@media (prefers-color-scheme: dark) {
+  page {
+    --c-bg: #0F172A;  --c-card: #1E293B;  --c-surface: #172033;  --c-surface-2: #1E293B;
+    --c-border: #334155;  --c-divider: #2A3A52;  --c-overlay: rgba(0, 0, 0, 0.55);
+    --c-text: #E5E7EB;  --c-text-sub: #CBD5E1;  --c-text-muted: #94A3B8;
+    --c-text-weak: #64748B;  --c-text-faint: #475569;
+    --c-primary: #3B82F6;  --c-primary-2: #60A5FA;
+    --c-primary-grad: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
+    --c-hero-grad: linear-gradient(160deg, #0B1220 0%, #1E3A8A 55%, #2563EB 100%);
+    --c-primary-soft: #16233B;
+    --c-success: #34D399;  --c-success-bg: #0E2A20;  --c-success-soft: #103025;
+    --c-warning: #FBBF24;  --c-warning-bg: #2E2410;  --c-warning-soft: #2E2410;
+    --c-danger: #F87171;   --c-danger-bg: #2A1414;   --c-danger-soft: #2E1717;
+    --c-info: #60A5FA;     --c-info-bg: #10243F;
+    --c-tint-primary: #13294A;  --c-tint-success: #103025;  --c-tint-warning: #2E2410;  --c-tint-danger: #2E1717;
+    --c-qualified: #34D399;  --c-qualified-bg: #0E2A20;  --c-qualified-tint: #103025;
+    --c-inuse: #60A5FA;      --c-inuse-bg: #10243F;      --c-inuse-tint: #13294A;
+    --c-pending: #FBBF24;    --c-pending-bg: #2E2410;    --c-pending-tint: #2E2410;
+    --c-abnormal: #F87171;   --c-abnormal-bg: #2A1414;   --c-abnormal-tint: #2E1717;
+    --c-maint: #A78BFA;      --c-maint-bg: #1E1B33;      --c-maint-tint: #211D38;
+    --c-scrapped: #94A3B8;   --c-scrapped-bg: #1E293B;   --c-scrapped-tint: #22304A;
+    --sh-card: 0 4rpx 20rpx rgba(0, 0, 0, 0.45);
+    --sh-card-hover: 0 8rpx 28rpx rgba(0, 0, 0, 0.55);
+    --sh-float: 0 10rpx 30rpx rgba(59, 130, 246, 0.30);
+  }
+}
+.theme-dark {
+  --c-bg: #0F172A;  --c-card: #1E293B;  --c-surface: #172033;  --c-surface-2: #1E293B;
+  --c-border: #334155;  --c-divider: #2A3A52;  --c-overlay: rgba(0, 0, 0, 0.55);
+  --c-text: #E5E7EB;  --c-text-sub: #CBD5E1;  --c-text-muted: #94A3B8;
+  --c-text-weak: #64748B;  --c-text-faint: #475569;
+  --c-primary: #3B82F6;  --c-primary-2: #60A5FA;
+  --c-primary-grad: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%);
+  --c-hero-grad: linear-gradient(160deg, #0B1220 0%, #1E3A8A 55%, #2563EB 100%);
+  --c-primary-soft: #16233B;
+  --c-success: #34D399;  --c-success-bg: #0E2A20;  --c-success-soft: #103025;
+  --c-warning: #FBBF24;  --c-warning-bg: #2E2410;  --c-warning-soft: #2E2410;
+  --c-danger: #F87171;   --c-danger-bg: #2A1414;   --c-danger-soft: #2E1717;
+  --c-info: #60A5FA;     --c-info-bg: #10243F;
+  --c-tint-primary: #13294A;  --c-tint-success: #103025;  --c-tint-warning: #2E2410;  --c-tint-danger: #2E1717;
+  --c-qualified: #34D399;  --c-qualified-bg: #0E2A20;  --c-qualified-tint: #103025;
+  --c-inuse: #60A5FA;      --c-inuse-bg: #10243F;      --c-inuse-tint: #13294A;
+  --c-pending: #FBBF24;    --c-pending-bg: #2E2410;    --c-pending-tint: #2E2410;
+  --c-abnormal: #F87171;   --c-abnormal-bg: #2A1414;   --c-abnormal-tint: #2E1717;
+  --c-maint: #A78BFA;      --c-maint-bg: #1E1B33;      --c-maint-tint: #211D38;
+  --c-scrapped: #94A3B8;   --c-scrapped-bg: #1E293B;   --c-scrapped-tint: #22304A;
+  --sh-card: 0 4rpx 20rpx rgba(0, 0, 0, 0.45);
+  --sh-card-hover: 0 8rpx 28rpx rgba(0, 0, 0, 0.55);
+  --sh-float: 0 10rpx 30rpx rgba(59, 130, 246, 0.30);
+  min-height: 100vh;
+}

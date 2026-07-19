@@ -1,0 +1,5 @@
+<!-- components/chart/chart.wxml -->
+<view class="chart">
+  <view wx:if="{{title}}" class="c-title">{{title}}</view>
+  <canvas type="2d" id="cv" class="c-canvas" style="height:{{height}}px;"></canvas>
+</view>

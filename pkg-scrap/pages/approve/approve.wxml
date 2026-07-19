@@ -2,11 +2,14 @@
 <view class="approve">
   <view wx:if="{{loading}}" class="muted card">加载中…</view>
   <view wx:for="{{list}}" wx:key="_id" class="card">
-    <view class="row" style="justify-content: space-between;">
+    <view class="row head" style="justify-content: space-between;" data-id="{{item._id}}" bindtap="onTap">
       <text class="name">{{item.name}}</text>
       <text class="muted">{{item.code}}</text>
     </view>
     <text class="muted">申请人：{{item.applicant}} · 原因：{{item.reason || '未填写'}}</text>
+    <view wx:if="{{selectedId === item._id}}" class="detail">
+      <flow-steps title="处置进度" labels="{{item.flow.labels}}" current="{{item.flow.current}}" rejected="{{item.flow.rejected}}" />
+    </view>
     <view class="acts">
       <button size="mini" type="primary" loading="{{acting}}" disabled="{{acting}}" data-id="{{item._id}}" bindtap="onPass">通过</button>
       <button size="mini" loading="{{acting}}" disabled="{{acting}}" bindtap="onReject" data-id="{{item._id}}">驳回</button>

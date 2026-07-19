@@ -1,0 +1,7 @@
+/* components/chart/chart.wxss */
+.chart {
+  background: var(--c-card); border-radius: var(--r-md);
+  padding: var(--sp-3); margin: var(--sp-3); box-shadow: var(--sh-card);
+}
+.c-title { font-size: var(--fs-md); font-weight: 700; color: var(--c-text); margin-bottom: var(--sp-2); }
+.c-canvas { width: 100%; display: block; }

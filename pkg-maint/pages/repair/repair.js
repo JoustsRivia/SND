@@ -1,6 +1,7 @@
 // pkg-maint/pages/repair/repair.js —— M7 报修处理（通过 / 维修登记 / 复检）
 const api = require('../../../utils/api');
 const network = require('../../../utils/network');
+const { buildFlow } = require('../../../utils/flow');
 
 Page({
   data: {
@@ -17,7 +18,9 @@ Page({
   async reload() {
     this.setData({ loading: true });
     const list = await api.getRepairList({}).catch(() => []);
-    this.setData({ list: list || [], loading: false });
+    // 注入流程阶段（报修→审批→维修→复检），让处理进度被感知
+    const list2 = (list || []).map((it) => ({ ...it, flow: buildFlow('repair', it.status) }));
+    this.setData({ list: list2, loading: false });
   },
 
   onTap(e) {

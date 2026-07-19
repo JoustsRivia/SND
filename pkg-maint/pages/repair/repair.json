@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "status-tag": "/components/status-tag/status-tag"
+    "status-tag": "/components/status-tag/status-tag",
+    "flow-steps": "/components/flow-steps/flow-steps"
   },
   "navigationBarTitleText": "报修处理"
 }

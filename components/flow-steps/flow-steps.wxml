@@ -1,0 +1,16 @@
+<!-- components/flow-steps/flow-steps.wxml -->
+<view class="fs">
+  <view wx:if="{{title}}" class="fs-title">{{title}}</view>
+  <view class="fs-list">
+    <view wx:for="{{nodes}}" wx:key="index" class="fs-item fs-{{item.state}}">
+      <view class="fs-node">
+        <text wx:if="{{item.state === 'done'}}" class="fs-check">✓</text>
+        <text wx:elif="{{item.state === 'reject'}}" class="fs-check">!</text>
+      </view>
+      <view class="fs-body">
+        <text class="fs-label">{{item.label}}</text>
+        <text wx:if="{{item.meta}}" class="fs-meta">{{item.meta}}</text>
+      </view>
+    </view>
+  </view>
+</view>

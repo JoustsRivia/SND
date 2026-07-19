@@ -2,6 +2,8 @@
 const api = require('../../utils/api');
 const auth = require('../../utils/auth');
 const { moduleGroups } = require('../../utils/modules');
+const theme = require('../../utils/theme');
+const app = getApp();
 
 const ROLE_TEXT = {
   lead: '专班负责人', project_lead: '项目部负责人', safety_officer: '专职安全员',
@@ -54,6 +56,7 @@ Page({
   onShow() {
     if (!auth.isLoggedIn()) { wx.reLaunch({ url: '/pages/login/login' }); return; }
     auth.ensureLogin().catch(() => {});
+    this.setData({ themeClass: theme.classOf(app.globalData.theme) });
     const p = auth.getProfile();
     this.applyProfile(p);
   },

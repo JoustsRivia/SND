@@ -3,12 +3,15 @@
   <view wx:if="{{loading}}" class="muted card">加载中…</view>
 
   <view wx:for="{{list}}" wx:key="_id" class="card" wx:if="{{!loading}}">
-    <view class="row" style="justify-content: space-between;">
+    <view class="row head" style="justify-content: space-between;" data-id="{{item._id}}" bindtap="onTap">
       <text class="name">{{item.name}}</text>
       <text class="muted">数量 {{item.qty}}</text>
     </view>
     <text class="muted">申请人：{{item.applicant}} · 预算：{{item.budget}}</text>
     <text wx:if="{{item.reason}}" class="muted reason">事由：{{item.reason}}</text>
+    <view wx:if="{{selectedId === item._id}}" class="detail">
+      <flow-steps title="采购进度" labels="{{item.flow.labels}}" current="{{item.flow.current}}" rejected="{{item.flow.rejected}}" />
+    </view>
     <view class="acts">
       <button size="mini" type="primary" data-id="{{item._id}}" data-pass="{{true}}" bindtap="onDecision" disabled="{{processing === item._id}}">通过</button>
       <button size="mini" data-id="{{item._id}}" data-pass="{{false}}" bindtap="onDecision" disabled="{{processing === item._id}}">驳回</button>

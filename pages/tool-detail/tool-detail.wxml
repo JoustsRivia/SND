@@ -1,4 +1,5 @@
 <!-- pages/tool-detail/tool-detail.wxml —— 器具档案「一物一档」 -->
+<view class="{{themeClass}}">
 <view wx:if="{{loading}}" class="loading">加载中…</view>
 
 <block wx:elif="{{tool}}">
@@ -24,6 +25,11 @@
   </view>
 
   <view class="card">
+    <text class="card-title">使用状态</text>
+    <flow-steps title="领用 → 归还" labels="{{flow.labels}}" current="{{flow.current}}" rejected="{{flow.rejected}}" />
+  </view>
+
+  <view class="card">
     <text class="card-title">履历时间线</text>
     <record-timeline records="{{timeline}}" emptyText="暂无履历记录" />
   </view>
@@ -42,3 +48,4 @@
   </view>
 </view>
 <view wx:else class="safe-bottom"></view>
+</view>

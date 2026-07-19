@@ -1,4 +1,5 @@
 <!-- pages/index/index.wxml —— 工作台（角色化九宫格 + 待办） -->
+<view class="{{themeClass}}">
 <view class="hero fade-in">
   <view class="hero-top">
     <view class="hero-user">
@@ -69,3 +70,4 @@
 <view wx:if="{{loading}}" class="loading">数据加载中…</view>
 
 <view class="safe-bottom"></view>
+</view>

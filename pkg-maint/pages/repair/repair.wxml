@@ -13,6 +13,7 @@
     </view>
 
     <view wx:if="{{selectedId === item._id}}" class="detail">
+      <flow-steps title="处理进度" labels="{{item.flow.labels}}" current="{{item.flow.current}}" rejected="{{item.flow.rejected}}" />
       <view class="line"><text class="muted">故障现象：</text><text>{{item.fault}}</text></view>
       <view class="line"><text class="muted">情况说明：</text><text>{{item.desc || '—'}}</text></view>
       <view class="line"><text class="muted">上报人：</text><text>{{item.reporter || '—'}}</text></view>

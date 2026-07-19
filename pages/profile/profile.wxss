@@ -25,3 +25,11 @@
 .role-pill { font-size: 22rpx; background: rgba(255, 255, 255, 0.2); padding: 4rpx 16rpx; border-radius: var(--r-pill); }
 .org { font-size: 22rpx; opacity: 0.9; }
 .ver { text-align: center; font-size: 22rpx; color: var(--c-text-weak); margin: var(--sp-4) 0; }
+
+/* 夜间模式切换行 */
+.theme-row { display: flex; align-items: center; justify-content: space-between; }
+.tr-label { display: flex; align-items: center; }
+.tr-ico { font-size: 40rpx; margin-right: var(--sp-2); }
+.tr-text { display: flex; flex-direction: column; }
+.tr-title { font-size: 28rpx; font-weight: 600; color: var(--c-text); }
+.tr-sub { font-size: 20rpx; color: var(--c-text-muted); margin-top: 4rpx; }

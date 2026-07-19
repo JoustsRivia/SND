@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "record-timeline": "/components/record-timeline/record-timeline"
+    "record-timeline": "/components/record-timeline/record-timeline",
+    "flow-steps": "/components/flow-steps/flow-steps"
   },
   "navigationBarTitleText": "采购审批"
 }

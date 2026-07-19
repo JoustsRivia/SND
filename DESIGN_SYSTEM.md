@@ -119,8 +119,14 @@
 2. **[P0 可视化]** 九宫格模块 tile 实时状态徽标（后端聚合 `homeStatus` → 前端渲染）。**已完成**：`cloudfunctions/stats` 新增 `homeStatus` action（8 个模块待办计数，tone 仅表语义）；`utils/api.js` 导出 `getHomeStatus`；`pages/index` 取数并 `attachBadges` 挂到 tile，`index.wxml` 渲染 `.badge.badge--{tone}`（>99 显示 `99+`），`index.wxss` 定位 + 白边隔离。
 
 > 映射：消息预警=未读预警(abnormal) / 周期试验=待检器具(pending) / 器具台账=临期器具(pending) / 维保报修=待审批报修(pending) / 报废管理=待审批报废(pending) / 监督检查=待整改隐患(abnormal) / 采购验收=待审批采购(pending) / 库房管理=盘亏器具(abnormal)。仅在有积压时显示徽标（节奏而非堆砌）。
-3. **[P1]** 四个核心流程时间线组件（领用归还/报修复检/采购入库/报废处置）。
-4. **[P1]** 统计驾驶舱图表化（ec-canvas）。
-5. **[P2]** 图标字体替换 emoji；展示字体加载；夜间主题。
+3. **[P1]** 四个核心流程时间线组件（领用归还/报修复检/采购入库/报废处置）。**已完成**：`utils/flow.js` 新增 `FLOWS` 映射（四流程 `labels` + `current(status)` 推导）与 `buildFlow(type, status, meta)`（驳回态 `rejected` 将 current 钳到 0）；`components/flow-steps` 纯 CSS 令牌 stepper 组件（done/active/wait/reject 节点 + 连接线，✓/! 标记，无外部依赖）。接入四处：
+   - `pkg-maint/pages/repair` → 报修复检（标题"处理进度"，select-to-expand）；
+   - `pkg-scrap/pages/approve` → 报废处置（标题"处置进度"，点击行展开）；
+   - `pkg-purchase/pages/approve` → 采购入库（标题"采购进度"，保留原 `record-timeline` 操作日志）；
+   - `pages/tool-detail` → 领用→归还（独立"使用状态"卡片，置于时间线前）。
+4. **[P1]** 统计驾驶舱图表化。**已完成（实现与原文偏差）**：原文指定 ec-canvas，但为规避其 ~1MB 依赖 + 外链网络/离线风险（现场弱网工具不宜引入），改用**原生 canvas 2d 自建 `components/chart` 组件**（支持 bar/line/pie，配色取自状态令牌，无第三方依赖）。`pkg-stats/pages/dashboard` 用 `getDashboard()` 状态分布 → pie（合格/待检/维修中/缺失/报废），近 7 日 `getTrend()` → line；移除旧 CSS 趋势占位。
+5. **[P2]** 图标字体替换 emoji；展示字体加载；夜间主题。**已完成**：
+   - 夜间主题：`utils/theme.js`（`auto`/`dark` 持久化）+ `@media (prefers-color-scheme: dark)`（自动，覆盖全部页面）与 `.theme-dark` 手动类（profile 开关持久化，覆盖 opted-in 页面根视图）；`app.wxss` 双份令牌块（内容与作用域一致）。
+   - 字体脚手架：`utils/fonts.js` 用 `wx.loadFontFace` 静默加载 `SNDNum`（等宽数字，默认 jsdelivr `@fontsource/roboto-mono`，失败回退系统等宽栈）+ 可选 `SNDIcon`（图标字体，`ICONFONT_URL` 留空即跳过）；`app.onLaunch` 调用；`app.wxss` 新增 `--font-num` 令牌与 `.font-num`/`.font-display`/`.iconfont` 类。**emoji 图标暂保留**，图标字体接入路径见 `utils/fonts.js` 顶部注释（iconfont.cn 导出 .ttf → 填 URL → wxml 改 `.iconfont` 文本）。
 
 > 所有页面/组件只引用令牌与工具类，**禁止硬编码色值**（除一次性渐变），换肤/调性只需改 `app.wxss`。

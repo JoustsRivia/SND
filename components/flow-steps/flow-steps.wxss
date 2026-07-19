@@ -1,0 +1,44 @@
+/* components/flow-steps/flow-steps.wxss —— 阶段步进器（复用设计令牌，禁止硬编码色） */
+.fs {
+  background: var(--c-card); border-radius: var(--r-md);
+  padding: var(--sp-3); margin: var(--sp-3); box-shadow: var(--sh-card);
+}
+.fs-title { font-size: var(--fs-md); font-weight: 700; color: var(--c-text); margin-bottom: var(--sp-2); }
+.fs-list { position: relative; }
+.fs-item { display: flex; align-items: flex-start; padding-bottom: var(--sp-4); position: relative; }
+.fs-item:last-child { padding-bottom: 0; }
+
+.fs-node {
+  width: 44rpx; height: 44rpx; border-radius: 50%;
+  border: 4rpx solid var(--c-border); background: var(--c-card);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; z-index: 1; margin-right: var(--sp-3);
+  box-sizing: border-box;
+}
+.fs-check { color: #fff; font-size: 26rpx; font-weight: 700; line-height: 1; }
+.fs-body { flex: 1; padding-top: 6rpx; min-width: 0; }
+.fs-label { font-size: var(--fs-md); font-weight: 600; color: var(--c-text); }
+.fs-meta { display: block; margin-top: 4rpx; font-size: var(--fs-xs); color: var(--c-text-muted); }
+
+/* 连接线：自节点中心向下贯穿至下一节点 */
+.fs-item:not(:last-child)::after {
+  content: ''; position: absolute; left: 21rpx; top: 44rpx; bottom: 0; width: 4rpx;
+  background: var(--c-divider);
+}
+
+/* 状态着色（语义令牌） */
+.fs-done .fs-node { background: var(--c-qualified); border-color: var(--c-qualified); }
+.fs-done::after { background: var(--c-qualified); }
+.fs-done .fs-label { color: var(--c-text-sub); }
+
+.fs-active .fs-node {
+  background: var(--c-inuse); border-color: var(--c-inuse);
+  box-shadow: 0 0 0 6rpx var(--c-inuse-tint);
+}
+.fs-active .fs-label { color: var(--c-inuse); }
+
+.fs-wait .fs-node { background: var(--c-card); border-color: var(--c-border); }
+.fs-wait .fs-label { color: var(--c-text-muted); }
+
+.fs-reject .fs-node { background: var(--c-abnormal); border-color: var(--c-abnormal); }
+.fs-reject .fs-label { color: var(--c-abnormal); }

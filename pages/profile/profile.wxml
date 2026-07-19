@@ -1,18 +1,31 @@
 <!-- pages/profile/profile.wxml —— 我的 -->
-<view class="hero fade-in">
-  <view class="avatar">{{avatarText}}</view>
-  <view class="info">
-    <text class="name">{{profile.nickName || profile.username || '未命名用户'}}</text>
-    <view class="sub-row">
-      <text class="role-pill">{{roleText || '成员'}}</text>
-      <text wx:if="{{orgName}}" class="org">{{orgName}}</text>
+<view class="{{themeClass}}">
+  <view class="hero fade-in">
+    <view class="avatar">{{avatarText}}</view>
+    <view class="info">
+      <text class="name">{{profile.nickName || profile.username || '未命名用户'}}</text>
+      <view class="sub-row">
+        <text class="role-pill">{{roleText || '成员'}}</text>
+        <text wx:if="{{orgName}}" class="org">{{orgName}}</text>
+      </view>
     </view>
   </view>
+
+  <stats-card wx:if="{{stats.length}}" items="{{stats}}" columns="3" />
+
+  <view class="theme-row card">
+    <view class="tr-label">
+      <text class="tr-ico">🌙</text>
+      <view class="tr-text">
+        <text class="tr-title">夜间模式</text>
+        <text class="tr-sub">深色作业终端风（手动开启；系统深色自动跟随）</text>
+      </view>
+    </view>
+    <switch checked="{{themeDark}}" color="#1A56DB" bindchange="onThemeToggle" />
+  </view>
+
+  <menu-list wx:if="{{groups.length}}" groups="{{groups}}" bind:select="onSelect" />
+
+  <view class="ver">工器具安全管理 · V1.0</view>
+  <view class="safe-bottom"></view>
 </view>
-
-<stats-card wx:if="{{stats.length}}" items="{{stats}}" columns="3" />
-
-<menu-list wx:if="{{groups.length}}" groups="{{groups}}" bind:select="onSelect" />
-
-<view class="ver">工器具安全管理 · V1.0</view>
-<view class="safe-bottom"></view>

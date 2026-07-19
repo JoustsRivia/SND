@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "stats-card": "/components/stats-card/stats-card"
+    "stats-card": "/components/stats-card/stats-card",
+    "chart": "/components/chart/chart"
   },
   "navigationBarTitleText": "统计分析"
 }
