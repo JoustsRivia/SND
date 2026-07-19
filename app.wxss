@@ -189,6 +189,9 @@ view, text, scroll-view, button { box-sizing: border-box; }
   border-radius: var(--r-pill); background: var(--c-danger);
   color: #fff; font-size: 20rpx; line-height: 32rpx; text-align: center;
 }
+/* 徽标语义 tone（九宫格模块实时状态；色值取自状态令牌，禁止硬编码） */
+.badge--pending { background: var(--c-pending); }
+.badge--abnormal { background: var(--c-abnormal); }
 
 /* ============================ 按钮 ============================ */
 .btn {
@@ -250,3 +253,86 @@ view, text, scroll-view, button { box-sizing: border-box; }
 /* 通用进场动效 */
 .fade-in { animation: fadeIn 0.4s ease both; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(12rpx); } to { opacity: 1; transform: none; } }
+
+/* =========================================================================
+   设计系统 v2 扩展（见 DESIGN_SYSTEM.md）：状态语义色 / 动效 / 流程时间线
+   全部以令牌表达，页面只引用类名，禁止硬编码色值
+   ========================================================================= */
+
+/* —— 状态语义色（器具/任务状态，区别于品牌蓝）—— */
+page {
+  --c-qualified: #059669;  --c-qualified-bg: #E6F7EE;  --c-qualified-tint: #E7F8EC;
+  --c-inuse: #2563EB;      --c-inuse-bg: #E8F0FE;      --c-inuse-tint: #EAF3FB;
+  --c-pending: #D97706;    --c-pending-bg: #FFF7ED;    --c-pending-tint: #FFF3E0;
+  --c-abnormal: #DC2626;   --c-abnormal-bg: #FEF2F2;   --c-abnormal-tint: #FFE9E7;
+  --c-maint: #7C3AED;      --c-maint-bg: #F5F3FF;      --c-maint-tint: #EFEAFD;
+  --c-scrapped: #6B7280;   --c-scrapped-bg: #F3F4F6;   --c-scrapped-tint: #ECEEF1;
+
+  /* —— 扩展圆角 / 间距 / 阴影 —— */
+  --r-2xl: 40rpx;
+  --sp-7: 80rpx;
+  --sh-rail: inset 3rpx 0 0 var(--c-inuse);
+
+  /* —— 动效令牌（指数缓出，禁用回弹）—— */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;  --dur-base: 280ms;  --dur-slow: 420ms;
+
+  /* —— 展示/数字字号 —— */
+  --fs-hero: 72rpx;  --fs-display: 56rpx;
+}
+
+/* ============================ 状态轨卡片 ============================ */
+.card--status { position: relative; overflow: hidden; }
+.card--status::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6rpx;
+  background: var(--rail, var(--c-inuse));
+}
+.card--qualified { --rail: var(--c-qualified); }
+.card--inuse { --rail: var(--c-inuse); }
+.card--pending { --rail: var(--c-pending); }
+.card--abnormal { --rail: var(--c-abnormal); }
+.card--maint { --rail: var(--c-maint); }
+.card--scrapped { --rail: var(--c-scrapped); }
+
+/* ============================ 状态药丸 ============================ */
+.pill-qualified { background: var(--c-qualified-bg); color: var(--c-qualified); }
+.pill-inuse { background: var(--c-inuse-bg); color: var(--c-inuse); }
+.pill-pending { background: var(--c-pending-bg); color: var(--c-pending); }
+.pill-abnormal { background: var(--c-abnormal-bg); color: var(--c-abnormal); }
+.pill-maint { background: var(--c-maint-bg); color: var(--c-maint); }
+.pill-scrapped { background: var(--c-scrapped-bg); color: var(--c-scrapped); }
+
+/* 红点 */
+.dot {
+  display: inline-block; width: 16rpx; height: 16rpx; border-radius: 50%;
+  background: var(--c-abnormal); vertical-align: middle;
+}
+
+/* ============================ 流程时间线 ============================ */
+.flow { padding-left: var(--sp-1); }
+.flow-item { position: relative; padding: 0 0 var(--sp-3) var(--sp-5); }
+.flow-item::before {
+  content: ''; position: absolute; left: 14rpx; top: 36rpx; bottom: 0; width: 4rpx;
+  background: linear-gradient(var(--c-qualified), var(--c-border));
+}
+.flow-item:last-child::before { display: none; }
+.flow-node {
+  position: absolute; left: 0; top: 6rpx; width: 32rpx; height: 32rpx; border-radius: 50%;
+  border: 4rpx solid var(--c-border); background: var(--c-card);
+  display: flex; align-items: center; justify-content: center;
+}
+.flow-node--done { border-color: var(--c-qualified); background: var(--c-qualified); }
+.flow-node--active { border-color: var(--c-inuse); background: var(--c-inuse); box-shadow: 0 0 0 6rpx var(--c-inuse-tint); }
+.flow-node--wait { border-color: var(--c-pending); }
+.flow-title { font-size: var(--fs-md); font-weight: 600; color: var(--c-text); }
+.flow-meta { font-size: var(--fs-xs); color: var(--c-text-muted); margin-top: 4rpx; }
+.flow-item--done .flow-title { color: var(--c-text-sub); }
+
+/* ============================ 展示/数字 ============================ */
+.t-display { font-size: var(--fs-display); font-weight: 700; line-height: 1.1; }
+.t-hero { font-size: var(--fs-hero); font-weight: 800; line-height: 1; }
+
+/* 进场错峰 */
+.fade-in-1 { animation: fadeIn var(--dur-base) var(--ease-out) both; }
+.fade-in-2 { animation: fadeIn var(--dur-base) var(--ease-out) 80ms both; }
+.fade-in-3 { animation: fadeIn var(--dur-base) var(--ease-out) 160ms both; }

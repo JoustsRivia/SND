@@ -37,7 +37,10 @@
   <view class="module-grid">
     <view wx:for="{{item.items}}" wx:for-item="m" wx:key="key" class="module-cell" hover-class="cell-hover"
           data-url="{{m.url}}" data-tab="{{m.tab ? 1 : 0}}" bindtap="onModule">
-      <view class="module-icon">{{m.icon}}</view>
+      <view class="module-icon">
+        {{m.icon}}
+        <view wx:if="{{m.badge}}" class="badge badge--{{m.badge.tone}}">{{m.badge.count > 99 ? '99+' : m.badge.count}}</view>
+      </view>
       <view class="module-label">{{m.label}}</view>
     </view>
   </view>

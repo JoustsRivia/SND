@@ -24,6 +24,18 @@ function buildTodos(d) {
   return todos;
 }
 
+// 把后端聚合的模块徽标挂到九宫格：仅当该模块有积压时才带 badge（节奏而非堆砌）
+function attachBadges(groups, status) {
+  if (!groups || !groups.length || !status) return groups;
+  return groups.map((g) => ({
+    ...g,
+    items: g.items.map((it) => {
+      const s = status[it.key];
+      return { ...it, badge: s && s.count ? { count: s.count, tone: s.tone } : null };
+    }),
+  }));
+}
+
 Page({
   data: {
     profile: null,
@@ -55,7 +67,7 @@ Page({
 
   applyProfile(p) {
     if (!p) {
-      this.setData({ profile: null, roleText: '', avatarText: '工', modules: [], groups: [] });
+      this.setData({ profile: null, roleText: '', avatarText: '工', modules: [], groups: attachBadges(moduleGroups(null), this._hs) });
       return;
     }
     const name = p.nickName || p.username || '';
@@ -64,7 +76,7 @@ Page({
       roleText: ROLE_TEXT[p.role] || '成员',
       avatarText: (name ? name[0] : '工').toUpperCase(),
       modules: [],           // 兼容旧字段（保留，避免其它引用报错）
-      groups: moduleGroups(p.role),
+      groups: attachBadges(moduleGroups(p.role), this._hs),
     });
   },
 
@@ -73,6 +85,9 @@ Page({
     const now = new Date();
     this.setData({ greeting: greetingByHour(now.getHours()), todayText: `${now.getMonth() + 1}月${now.getDate()}日` });
     const p = auth.getProfile() || (await auth.ensureLogin().catch(() => null));
+    // 模块徽标聚合：先取一次并缓存，onShow 切回时直接复用，无需重复请求
+    const hs = await api.getHomeStatus().catch(() => null);
+    if (hs) this._hs = hs;
     this.applyProfile(p);
     const d = await api.getDashboard().catch(() => null);
     if (d) {

@@ -145,6 +145,8 @@ const getSixStandard = () => invoke(FN.stats, 'sixStandard');
 const getMyStats = () => invoke(FN.stats, 'myStats');
 const getTrend = (params) => invoke(FN.stats, 'trend', params);
 const exportReport = (params) => invoke(FN.stats, 'exportReport', params);
+// 工作台模块徽标聚合（P0 可视化：九宫格 tile 实时状态徽标）
+const getHomeStatus = () => invoke(FN.stats, 'homeStatus');
 
 // ── 系统管理 M13 ──────────────────────────────────────────────────────
 const getOrgTree = () => invoke(FN.system, 'orgTree');
@@ -235,7 +237,7 @@ module.exports = {
   // 预警
   getWarnings, readWarning, readAllWarnings, subscribeWarning, generateWarnings,
   // 统计
-  getDashboard, getProjectDashboard, getSixStandard, getMyStats, getTrend, exportReport,
+  getDashboard, getProjectDashboard, getSixStandard, getMyStats, getTrend, exportReport, getHomeStatus,
   // 系统
   getOrgTree, manageOrg, manageUser, listUsers, seedAdmin, getDict, createDict, updateDict, removeDict, manageCheckTemplate,
   // 条码

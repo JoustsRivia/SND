@@ -187,6 +187,34 @@ async function trend(payload = {}) {
   return ok(list);
 }
 
+// 工作台模块徽标聚合（P0 可视化：让能力被感知）
+// 返回各功能模块的待办/积压计数，前端按 module key 渲染状态徽标。
+// tone 仅表示语义（abnormal=红 / pending=橙），色值一律由前端设计令牌解析，禁止硬编码。
+async function homeStatus() {
+  ensureLogin();
+  const [warnings, pendingTest, expiring, repairPending, scrapPending, hazardsOpen, purchPending, missing] = await Promise.all([
+    db.countBy('warnings', { read: false }),
+    db.countBy('tools', { status: 'pending_test' }),
+    db.countBy('tools', { status: 'qualified', ...db.expiringSoon(15) }),
+    db.countBy('repair_records', { status: 'pending' }),
+    db.countBy('scrap_records', { status: 'pending' }),
+    db.countBy('hazards', { status: db._.in(['open', 'assigned']) }),
+    db.countBy('purchases', { status: 'pending' }),
+    db.countBy('tools', { status: 'missing' }),
+  ]);
+  const m = (r, tone) => ({ count: (r && r.total) || 0, tone });
+  return ok({
+    message: m(warnings, 'abnormal'),    // 未读预警
+    test: m(pendingTest, 'pending'),     // 待检器具
+    ledger: m(expiring, 'pending'),      // 临期器具
+    maint: m(repairPending, 'pending'),  // 待审批报修
+    scrap: m(scrapPending, 'pending'),   // 待审批报废
+    check: m(hazardsOpen, 'abnormal'),   // 待整改隐患
+    purchase: m(purchPending, 'pending'),// 待审批采购
+    store: m(missing, 'abnormal'),       // 盘亏器具
+  });
+}
+
 exports.main = async (event) => {
   const { action, payload = {} } = event || {};
   try {
@@ -200,6 +228,7 @@ exports.main = async (event) => {
       case 'exportReport': return await exportReport(payload);
       case 'snapshot': return await snapshot();
       case 'trend': return await trend(payload);
+      case 'homeStatus': return await homeStatus(payload);
       default: return fail('未知 action: ' + action);
     }
   } catch (e) {
